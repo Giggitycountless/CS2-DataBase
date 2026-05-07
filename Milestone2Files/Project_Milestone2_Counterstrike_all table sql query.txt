@@ -1,0 +1,128 @@
+DROP TABLE PlayerMatchStats;
+DROP TABLE TournamentParticipation;
+DROP TABLE MatchRecord;
+DROP TABLE MatchTable;
+DROP TABLE PlayerContract;
+DROP TABLE CoachContract;
+DROP TABLE Player;
+DROP TABLE Coach;
+DROP TABLE Tournament;
+DROP TABLE Team;
+DROP TABLE People;
+
+
+CREATE TABLE People (
+    PersonID INT PRIMARY KEY,
+    Nickname VARCHAR(50),
+    FullName VARCHAR(100),
+    Birthday DATE,
+    Nationality VARCHAR(50)
+);
+
+CREATE TABLE Player (
+    PersonID INT PRIMARY KEY,
+    Rating DECIMAL(4,2),
+    ADR DECIMAL(5,2),
+    DPR DECIMAL(5,2),
+    FOREIGN KEY (PersonID) REFERENCES People(PersonID)
+);
+
+CREATE TABLE Coach (
+    PersonID INT PRIMARY KEY,
+    WinRate DECIMAL(5,2),
+    FOREIGN KEY (PersonID) REFERENCES People(PersonID)
+);
+
+CREATE TABLE Team (
+    TeamName VARCHAR(100) PRIMARY KEY,
+    Region VARCHAR(50)
+);
+
+CREATE TABLE PlayerContract (
+    PlayerContractID INT PRIMARY KEY,
+    PersonID INT,
+    TeamName VARCHAR(100),
+    StartDate DATE,
+    EndDate DATE,
+    InGameRole VARCHAR(50),
+    FOREIGN KEY (PersonID) REFERENCES Player(PersonID),
+    FOREIGN KEY (TeamName) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE CoachContract (
+    CoachContractID INT PRIMARY KEY,
+    PersonID INT,
+    TeamName VARCHAR(100),
+    StartDate DATE,
+    EndDate DATE,
+    FOREIGN KEY (PersonID) REFERENCES Coach(PersonID),
+    FOREIGN KEY (TeamName) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE Tournament (
+    TournamentID INT PRIMARY KEY,
+    TournamentName VARCHAR(100),
+    TournyStartDate DATE,
+    TournyEndDate DATE
+);
+
+CREATE TABLE MatchTable (
+    MatchID INT PRIMARY KEY,
+    TournamentID INT,
+    MatchDate DATE,
+    Stage VARCHAR(50),
+    TeamA VARCHAR(100),
+    TeamB VARCHAR(100),
+    MatchResultTeamA VARCHAR(50),
+    MatchResultTeamB VARCHAR(50),
+    WinnerTeam VARCHAR(100),
+    WinningCondition VARCHAR(100),
+    FOREIGN KEY (TournamentID) REFERENCES Tournament(TournamentID),
+    FOREIGN KEY (TeamA) REFERENCES Team(TeamName),
+    FOREIGN KEY (TeamB) REFERENCES Team(TeamName),
+    FOREIGN KEY (WinnerTeam) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE MatchRecord (
+    MatchRecordID INT PRIMARY KEY,
+    MatchID INT,
+    RecordDate DATE,
+    TeamA VARCHAR(100),
+    TeamB VARCHAR(100),
+    StartingSide VARCHAR(50),
+    FinalScore VARCHAR(20),
+    TopHalfScore VARCHAR(20),
+    BottomHalfScore VARCHAR(20),
+    TeamAResult VARCHAR(50),
+    TeamBResult VARCHAR(50),
+    Map VARCHAR(50),
+    FOREIGN KEY (MatchID) REFERENCES MatchTable(MatchID),
+    FOREIGN KEY (TeamA) REFERENCES Team(TeamName),
+    FOREIGN KEY (TeamB) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE PlayerMatchStats (
+    MatchRecordID INT NOT NULL,
+    PlayerID INT NOT NULL,
+    TeamName VARCHAR(100),
+    Kills INT DEFAULT 0,
+    Deaths INT DEFAULT 0,
+    Assists INT DEFAULT 0,
+    Rating DECIMAL(3, 2),
+    ADR DECIMAL(4, 1),
+    DPR DECIMAL(3, 2),
+    
+    PRIMARY KEY (MatchRecordID, PlayerID),
+    FOREIGN KEY (MatchRecordID) REFERENCES MatchRecord(MatchRecordID),
+    FOREIGN KEY (PlayerID) REFERENCES Player(PersonID),
+    FOREIGN KEY (TeamName) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE TournamentParticipation (
+    TournamentID INT,
+    TeamName VARCHAR(100),
+    Placement VARCHAR(50),
+    PRIMARY KEY (TournamentID, TeamName),
+    FOREIGN KEY (TournamentID) REFERENCES Tournament(TournamentID),
+    FOREIGN KEY (TeamName) REFERENCES Team(TeamName)
+);

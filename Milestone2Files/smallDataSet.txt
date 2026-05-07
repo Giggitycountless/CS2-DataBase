@@ -1,0 +1,661 @@
+TRUNCATE TABLE PlayerMatchStats;
+TRUNCATE TABLE TournamentParticipation;
+TRUNCATE TABLE MatchRecord;
+TRUNCATE TABLE MatchTable;
+TRUNCATE TABLE Tournament;
+DELETE FROM PlayerContract;
+DELETE FROM CoachContract;
+DELETE FROM Player;
+DELETE FROM Coach;
+DELETE FROM Team;
+DELETE FROM People;
+COMMIT;
+
+-- Insert all teams
+INSERT ALL
+    INTO Team (TeamName, Region) VALUES ('The MongolZ', 'Asia')
+    INTO Team (TeamName, Region) VALUES ('MOUZ', 'Europe')
+    INTO Team (TeamName, Region) VALUES ('Team Spirit', 'CIS')
+    INTO Team (TeamName, Region) VALUES ('Team Liquid', 'Americas')
+    INTO Team (TeamName, Region) VALUES ('G2 Esports', 'Europe')
+    INTO Team (TeamName, Region) VALUES ('HEROIC', 'Europe')
+    INTO Team (TeamName, Region) VALUES ('Team Vitality', 'Europe')
+    INTO Team (TeamName, Region) VALUES ('FaZe Clan', 'Europe')
+SELECT * FROM dual;
+
+
+-- Insert all players
+INSERT ALL
+    -- === The MongolZ ===
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (1, 'mzinho', 'Ayush Batbold', TO_DATE('2007-05-31', 'YYYY-MM-DD'), 'Mongolia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (2, 'Techno', 'Munkhbold Sodbayar', TO_DATE('2005-05-18', 'YYYY-MM-DD'), 'Mongolia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (3, '910', 'Usukhbayar Banzragch', TO_DATE('2002-12-19', 'YYYY-MM-DD'), 'Mongolia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (4, 'bLitz', 'Garidmagnai Byambasuren', TO_DATE('2001-08-23', 'YYYY-MM-DD'), 'Mongolia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (5, 'Senzu', 'Munkhbold Azbayar', TO_DATE('2006-09-19', 'YYYY-MM-DD'), 'Mongolia')
+    -- === MOUZ ===
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (6, 'Brollan', 'Ludvig Brolin', TO_DATE('2002-06-17', 'YYYY-MM-DD'), 'Sweden')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (7, 'Jimpphat', 'Jimi Salo', TO_DATE('2006-09-08', 'YYYY-MM-DD'), 'Finland')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (8, 'xertioN', 'Dorian Berman', TO_DATE('2004-07-20', 'YYYY-MM-DD'), 'Israel')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (9, 'siuhy', 'Kamil Szkaradek', TO_DATE('2002-08-26', 'YYYY-MM-DD'), 'Poland')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (10, 'torzsi', 'Ádám Torzsás', TO_DATE('2002-05-22', 'YYYY-MM-DD'), 'Hungary')
+    -- === Team Spirit ===
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (11, 'donk', 'Danil Kryshkovets', TO_DATE('2007-01-25', 'YYYY-MM-DD'), 'Russia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (12, 'sh1ro', 'Dmitry Sokolov', TO_DATE('2001-07-15', 'YYYY-MM-DD'), 'Russia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (13, 'chopper', 'Leonid Vishnyakov', TO_DATE('1997-02-02', 'YYYY-MM-DD'), 'Russia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (14, 'zont1x', 'Myroslav Plakhotia', TO_DATE('2005-07-20', 'YYYY-MM-DD'), 'Ukraine')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (15, 'magixx', 'Boris Vorobiev', TO_DATE('2003-06-03', 'YYYY-MM-DD'), 'Russia')
+    -- === Team Liquid ===
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (16, 'Twistzz', 'Russel Van Dulken', TO_DATE('1999-11-14', 'YYYY-MM-DD'), 'Canada')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (17, 'jks', 'Justin Savage', TO_DATE('1995-12-12', 'YYYY-MM-DD'), 'Australia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (18, 'YEKINDAR', 'Mareks Gaļinskis', TO_DATE('1999-10-04', 'YYYY-MM-DD'), 'Latvia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (19, 'NAF', 'Keith Markovic', TO_DATE('1997-11-24', 'YYYY-MM-DD'), 'Canada')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (20, 'ultimate', 'Roland Tomkowiak', TO_DATE('2002-12-20', 'YYYY-MM-DD'), 'Poland')
+    -- === G2 Esports ===
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (21, 'NiKo', 'Nikola Kovač', TO_DATE('1997-02-16', 'YYYY-MM-DD'), 'Bosnia and Herzegovina')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (22, 'm0NESY', 'Ilya Osipov', TO_DATE('2005-05-01', 'YYYY-MM-DD'), 'Russia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (23, 'malbsMd', 'Mario Samayoa', TO_DATE('2002-11-06', 'YYYY-MM-DD'), 'Guatemala')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (24, 'Snax', 'Janusz Pogorzelski', TO_DATE('1993-07-05', 'YYYY-MM-DD'), 'Poland')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (25, 'huNter-', 'Nemanja Kovač', TO_DATE('1996-01-03', 'YYYY-MM-DD'), 'Bosnia and Herzegovina')
+    -- === HEROIC ===
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (26, 'degster', 'Abdul Gasanov', TO_DATE('2001-09-06', 'YYYY-MM-DD'), 'Russia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (27, 'TeSeS', 'René Madsen', TO_DATE('2001-03-24', 'YYYY-MM-DD'), 'Denmark')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (28, 'NertZ', 'Guy Iluz', TO_DATE('1999-07-13', 'YYYY-MM-DD'), 'Israel')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (29, 'sjuush', 'Rasmus Beck', TO_DATE('1999-01-04', 'YYYY-MM-DD'), 'Denmark')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (30, 'kyxsan', 'Damjan Stoilkovski', TO_DATE('2000-01-18', 'YYYY-MM-DD'), 'North Macedonia')
+    -- === Team Vitality ===
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (31, 'ZywOo', 'Mathieu Herbaut', TO_DATE('2000-11-09', 'YYYY-MM-DD'), 'France')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (32, 'Spinx', 'Lotan Giladi', TO_DATE('2000-09-13', 'YYYY-MM-DD'), 'Israel')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (33, 'flameZ', 'Shahar Shushan', TO_DATE('2003-06-22', 'YYYY-MM-DD'), 'Israel')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (34, 'mezii', 'William Merriman', TO_DATE('1998-10-15', 'YYYY-MM-DD'), 'United Kingdom')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (35, 'apEX', 'Dan Madesclaire', TO_DATE('1993-02-22', 'YYYY-MM-DD'), 'France')
+    -- === FaZe Clan ===
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (36, 'ropz', 'Robin Kool', TO_DATE('1999-12-22', 'YYYY-MM-DD'), 'Estonia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (37, 'broky', 'Helvijs Saukants', TO_DATE('2001-02-14', 'YYYY-MM-DD'), 'Latvia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (38, 'frozen', 'David Čerňanský', TO_DATE('2002-07-18', 'YYYY-MM-DD'), 'Slovakia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (39, 'rain', 'Håvard Nygaard', TO_DATE('1994-08-27', 'YYYY-MM-DD'), 'Norway')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (40, 'karrigan', 'Finn Andersen', TO_DATE('1990-04-14', 'YYYY-MM-DD'), 'Denmark')
+SELECT * FROM dual;
+
+INSERT ALL
+    -- The MongolZ
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (1, 1.01, 71.2, 0.69) -- mzinho
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (2, 1.04, 76.5, 0.72) -- Techno
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (3, 1.09, 70.8, 0.60) -- 910
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (4, 1.06, 77.4, 0.71) -- bLitz
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (5, 1.10, 79.1, 0.74) -- Senzu
+    -- MOUZ
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (6, 1.11, 80.5, 0.69) -- Brollan
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (7, 1.14, 75.2, 0.62) -- Jimpphat
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (8, 1.12, 81.3, 0.71) -- xertioN
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (9, 1.00, 69.9, 0.70) -- siuhy
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (10, 1.10, 71.4, 0.61) -- torzsi
+    -- Team Spirit
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (11, 1.32, 90.4, 0.66) -- donk
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (12, 1.21, 76.6, 0.59) -- sh1ro
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (13, 0.96, 68.8, 0.73) -- chopper
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (14, 1.06, 75.5, 0.68) -- zont1x
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (15, 1.02, 72.2, 0.70) -- magixx
+    -- Team Liquid
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (16, 1.14, 79.5, 0.65) -- Twistzz
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (17, 1.08, 75.1, 0.66) -- jks
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (18, 1.11, 80.8, 0.74) -- YEKINDAR
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (19, 1.13, 79.9, 0.64) -- NAF
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (20, 1.08, 73.3, 0.65) -- ultimate
+    -- G2 Esports
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (21, 1.20, 84.4, 0.70) -- NiKo
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (22, 1.24, 76.2, 0.58) -- m0NESY
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (23, 1.11, 82.1, 0.76) -- malbsMd
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (24, 1.06, 78.4, 0.71) -- Snax
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (25, 1.08, 77.8, 0.69) -- huNter-
+    -- HEROIC
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (26, 1.11, 75.4, 0.68) -- degster
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (27, 1.05, 74.9, 0.70) -- TeSeS
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (28, 1.14, 80.6, 0.72) -- NertZ
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (29, 1.04, 73.1, 0.68) -- sjuush
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (30, 1.01, 69.5, 0.69) -- kyxsan
+    -- Team Vitality
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (31, 1.31, 85.5, 0.61) -- ZywOo
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (32, 1.12, 79.8, 0.68) -- Spinx
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (33, 1.09, 78.8, 0.71) -- flameZ
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (34, 1.03, 73.4, 0.69) -- mezii
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (35, 1.01, 71.2, 0.74) -- apEX
+    -- FaZe Clan
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (36, 1.16, 78.5, 0.61) -- ropz
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (37, 1.11, 74.8, 0.64) -- broky
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (38, 1.10, 79.4, 0.68) -- frozen
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (39, 1.05, 77.2, 0.71) -- rain
+    INTO Player (PersonID, Rating, ADR, DPR) VALUES (40, 0.94, 66.8, 0.73) -- karrigan
+SELECT * FROM dual;
+
+INSERT ALL
+    -- === The MongolZ (ID: 1-5) ===
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (1, 1, 'The MongolZ', TO_DATE('2023-03-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (2, 2, 'The MongolZ', TO_DATE('2023-03-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (3, 3, 'The MongolZ', TO_DATE('2023-03-01', 'YYYY-MM-DD'), NULL, 'AWPer')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (4, 4, 'The MongolZ', TO_DATE('2023-03-01', 'YYYY-MM-DD'), NULL, 'IGL')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (5, 5, 'The MongolZ', TO_DATE('2023-03-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    
+    -- === MOUZ (ID: 6-10) ===
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (6, 6, 'MOUZ', TO_DATE('2023-12-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (7, 7, 'MOUZ', TO_DATE('2023-01-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (8, 8, 'MOUZ', TO_DATE('2021-06-01', 'YYYY-MM-DD'), NULL, 'Entry Fragger')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (9, 9, 'MOUZ', TO_DATE('2023-07-01', 'YYYY-MM-DD'), NULL, 'IGL')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (10, 10, 'MOUZ', TO_DATE('2021-06-01', 'YYYY-MM-DD'), NULL, 'AWPer')
+    
+    -- === Team Spirit (ID: 11-15) ===
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (11, 11, 'Team Spirit', TO_DATE('2023-07-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (12, 12, 'Team Spirit', TO_DATE('2023-12-01', 'YYYY-MM-DD'), NULL, 'AWPer')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (13, 13, 'Team Spirit', TO_DATE('2021-01-01', 'YYYY-MM-DD'), NULL, 'IGL')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (14, 14, 'Team Spirit', TO_DATE('2023-07-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (15, 15, 'Team Spirit', TO_DATE('2019-09-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    
+    -- === Team Liquid (ID: 16-20) ===
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (16, 16, 'Team Liquid', TO_DATE('2023-12-01', 'YYYY-MM-DD'), NULL, 'IGL')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (17, 17, 'Team Liquid', TO_DATE('2024-07-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (18, 18, 'Team Liquid', TO_DATE('2022-06-01', 'YYYY-MM-DD'), NULL, 'Entry Fragger')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (19, 19, 'Team Liquid', TO_DATE('2018-01-01', 'YYYY-MM-DD'), NULL, 'Lurker')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (20, 20, 'Team Liquid', TO_DATE('2024-07-01', 'YYYY-MM-DD'), NULL, 'AWPer')
+    
+    -- === G2 Esports (ID: 21-25) ===
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (21, 21, 'G2 Esports', TO_DATE('2020-11-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (22, 22, 'G2 Esports', TO_DATE('2022-01-01', 'YYYY-MM-DD'), NULL, 'AWPer')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (23, 23, 'G2 Esports', TO_DATE('2024-07-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (24, 24, 'G2 Esports', TO_DATE('2024-07-01', 'YYYY-MM-DD'), NULL, 'IGL')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (25, 25, 'G2 Esports', TO_DATE('2020-11-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    
+    -- === HEROIC (ID: 26-30) ===
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (26, 26, 'HEROIC', TO_DATE('2024-05-01', 'YYYY-MM-DD'), NULL, 'AWPer')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (27, 27, 'HEROIC', TO_DATE('2019-09-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (28, 28, 'HEROIC', TO_DATE('2023-12-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (29, 29, 'HEROIC', TO_DATE('2021-02-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (30, 30, 'HEROIC', TO_DATE('2023-12-01', 'YYYY-MM-DD'), NULL, 'IGL')
+    
+    -- === Team Vitality (ID: 31-35) ===
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (31, 31, 'Team Vitality', TO_DATE('2018-10-01', 'YYYY-MM-DD'), NULL, 'AWPer')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (32, 32, 'Team Vitality', TO_DATE('2022-08-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (33, 33, 'Team Vitality', TO_DATE('2023-06-01', 'YYYY-MM-DD'), NULL, 'Entry Fragger')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (34, 34, 'Team Vitality', TO_DATE('2023-11-01', 'YYYY-MM-DD'), NULL, 'Lurker')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (35, 35, 'Team Vitality', TO_DATE('2018-10-01', 'YYYY-MM-DD'), NULL, 'IGL')
+    
+    -- === FaZe Clan (ID: 36-40) ===
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (36, 36, 'FaZe Clan', TO_DATE('2022-01-01', 'YYYY-MM-DD'), NULL, 'Lurker')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (37, 37, 'FaZe Clan', TO_DATE('2019-09-01', 'YYYY-MM-DD'), NULL, 'AWPer')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (38, 38, 'FaZe Clan', TO_DATE('2023-11-01', 'YYYY-MM-DD'), NULL, 'Rifler')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (39, 39, 'FaZe Clan', TO_DATE('2016-01-01', 'YYYY-MM-DD'), NULL, 'Entry Fragger')
+    INTO PlayerContract (PlayerContractID, PersonID, TeamName, StartDate, EndDate, InGameRole) VALUES (40, 40, 'FaZe Clan', TO_DATE('2021-02-01', 'YYYY-MM-DD'), NULL, 'IGL')
+SELECT * FROM dual;
+
+
+-- Insert all coaches
+INSERT ALL
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (41, 'maaRaa', 'Erdenedalai Bayanbat', TO_DATE('1989-01-21', 'YYYY-MM-DD'), 'Mongolia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (42, 'sycrone', 'Dennis Nielsen', TO_DATE('1996-01-14', 'YYYY-MM-DD'), 'Denmark')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (43, 'hally', 'Sergey Shavaev', TO_DATE('1993-01-11', 'YYYY-MM-DD'), 'Russia')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (44, 'mithR', 'Torbjørn Nyborg', TO_DATE('1989-11-20', 'YYYY-MM-DD'), 'Denmark')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (45, 'TaZ', 'Wiktor Wojtas', TO_DATE('1986-06-06', 'YYYY-MM-DD'), 'Poland')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (46, 'sAw', 'Eetu Saha', TO_DATE('1992-05-18', 'YYYY-MM-DD'), 'Finland')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (47, 'XTQZZZ', 'Rémy Quoniam', TO_DATE('1988-12-23', 'YYYY-MM-DD'), 'France')
+    INTO People (PersonID, Nickname, FullName, Birthday, Nationality) VALUES (48, 'NEO', 'Filip Kubski', TO_DATE('1987-06-15', 'YYYY-MM-DD'), 'Poland')
+SELECT * FROM dual;
+
+INSERT ALL
+    INTO Coach (PersonID, WinRate) VALUES (41, 58.5) -- maaRaa
+    INTO Coach (PersonID, WinRate) VALUES (42, 62.1) -- sycrone
+    INTO Coach (PersonID, WinRate) VALUES (43, 65.4) -- hally
+    INTO Coach (PersonID, WinRate) VALUES (44, 55.8) -- mithR
+    INTO Coach (PersonID, WinRate) VALUES (45, 54.2) -- TaZ
+    INTO Coach (PersonID, WinRate) VALUES (46, 59.7) -- sAw
+    INTO Coach (PersonID, WinRate) VALUES (47, 60.5) -- XTQZZZ
+    INTO Coach (PersonID, WinRate) VALUES (48, 57.9) -- NEO
+SELECT * FROM dual;
+
+INSERT ALL
+    -- The MongolZ
+    INTO CoachContract (CoachContractID, PersonID, TeamName, StartDate, EndDate) 
+    VALUES (1, 41, 'The MongolZ', TO_DATE('2023-01-01', 'YYYY-MM-DD'), NULL)
+    -- MOUZ
+    INTO CoachContract (CoachContractID, PersonID, TeamName, StartDate, EndDate) 
+    VALUES (2, 42, 'MOUZ', TO_DATE('2022-01-05', 'YYYY-MM-DD'), NULL)
+    -- Team Spirit
+    INTO CoachContract (CoachContractID, PersonID, TeamName, StartDate, EndDate) 
+    VALUES (3, 43, 'Team Spirit', TO_DATE('2022-02-01', 'YYYY-MM-DD'), NULL)
+    -- Team Liquid
+    INTO CoachContract (CoachContractID, PersonID, TeamName, StartDate, EndDate) 
+    VALUES (4, 44, 'Team Liquid', TO_DATE('2024-06-15', 'YYYY-MM-DD'), NULL)
+    -- G2 Esports
+    INTO CoachContract (CoachContractID, PersonID, TeamName, StartDate, EndDate) 
+    VALUES (5, 45, 'G2 Esports', TO_DATE('2023-12-11', 'YYYY-MM-DD'), NULL)
+    -- HEROIC
+    INTO CoachContract (CoachContractID, PersonID, TeamName, StartDate, EndDate) 
+    VALUES (6, 46, 'HEROIC', TO_DATE('2023-12-15', 'YYYY-MM-DD'), NULL)
+    -- Team Vitality
+    INTO CoachContract (CoachContractID, PersonID, TeamName, StartDate, EndDate) 
+    VALUES (7, 47, 'Team Vitality', TO_DATE('2023-10-13', 'YYYY-MM-DD'), NULL)
+    -- FaZe Clan
+    INTO CoachContract (CoachContractID, PersonID, TeamName, StartDate, EndDate) 
+    VALUES (8, 48, 'FaZe Clan', TO_DATE('2023-07-27', 'YYYY-MM-DD'), NULL)
+SELECT * FROM dual;
+
+
+
+-- Insert tournament
+INSERT INTO Tournament (TournamentID, TournamentName, TournyStartDate, TournyEndDate) 
+VALUES (1, 'Perfect World Shanghai Major 2025', TO_DATE('2025-11-30', 'YYYY-MM-DD'), TO_DATE('2025-12-15', 'YYYY-MM-DD'));
+
+-- Tournament Placement
+INSERT ALL
+    -- 1st and 2nd
+    INTO TournamentParticipation (TournamentID, TeamName, Placement) VALUES (1, 'Team Spirit', '1st')
+    INTO TournamentParticipation (TournamentID, TeamName, Placement) VALUES (1, 'FaZe Clan', '2nd')
+    -- 3-4th
+    INTO TournamentParticipation (TournamentID, TeamName, Placement) VALUES (1, 'G2 Esports', '3-4th')
+    INTO TournamentParticipation (TournamentID, TeamName, Placement) VALUES (1, 'MOUZ', '3-4th')
+    -- 5-8th
+    INTO TournamentParticipation (TournamentID, TeamName, Placement) VALUES (1, 'Team Vitality', '5-8th')
+    INTO TournamentParticipation (TournamentID, TeamName, Placement) VALUES (1, 'HEROIC', '5-8th')
+    INTO TournamentParticipation (TournamentID, TeamName, Placement) VALUES (1, 'Team Liquid', '5-8th')
+    INTO TournamentParticipation (TournamentID, TeamName, Placement) VALUES (1, 'The MongolZ', '5-8th')
+SELECT * FROM dual;
+
+
+-- Insert all matches (MatchTable)
+INSERT ALL
+    -- Quarter-finals
+    INTO MatchTable (MatchID, TournamentID, MatchDate, Stage, TeamA, TeamB, MatchResultTeamA, MatchResultTeamB, WinnerTeam, WinningCondition)
+    VALUES (1, 1, TO_DATE('2025-12-11', 'YYYY-MM-DD'), 'Quarter-finals', 'The MongolZ', 'MOUZ', '0', '2', 'MOUZ', 'Best of 3')
+    
+    INTO MatchTable (MatchID, TournamentID, MatchDate, Stage, TeamA, TeamB, MatchResultTeamA, MatchResultTeamB, WinnerTeam, WinningCondition)
+    VALUES (2, 1, TO_DATE('2025-12-11', 'YYYY-MM-DD'), 'Quarter-finals', 'Team Spirit', 'Team Liquid', '2', '0', 'Team Spirit', 'Best of 3')
+    
+    INTO MatchTable (MatchID, TournamentID, MatchDate, Stage, TeamA, TeamB, MatchResultTeamA, MatchResultTeamB, WinnerTeam, WinningCondition)
+    VALUES (3, 1, TO_DATE('2025-12-12', 'YYYY-MM-DD'), 'Quarter-finals', 'G2 Esports', 'HEROIC', '2', '1', 'G2 Esports', 'Best of 3')
+    
+    INTO MatchTable (MatchID, TournamentID, MatchDate, Stage, TeamA, TeamB, MatchResultTeamA, MatchResultTeamB, WinnerTeam, WinningCondition)
+    VALUES (4, 1, TO_DATE('2025-12-12', 'YYYY-MM-DD'), 'Quarter-finals', 'Team Vitality', 'FaZe Clan', '1', '2', 'FaZe Clan', 'Best of 3')
+    
+    -- Semi-finals
+    INTO MatchTable (MatchID, TournamentID, MatchDate, Stage, TeamA, TeamB, MatchResultTeamA, MatchResultTeamB, WinnerTeam, WinningCondition)
+    VALUES (5, 1, TO_DATE('2025-12-14', 'YYYY-MM-DD'), 'Semi-finals', 'MOUZ', 'Team Spirit', '1', '2', 'Team Spirit', 'Best of 3')
+    
+    INTO MatchTable (MatchID, TournamentID, MatchDate, Stage, TeamA, TeamB, MatchResultTeamA, MatchResultTeamB, WinnerTeam, WinningCondition)
+    VALUES (6, 1, TO_DATE('2025-12-14', 'YYYY-MM-DD'), 'Semi-finals', 'G2 Esports', 'FaZe Clan', '0', '2', 'FaZe Clan', 'Best of 3')
+    
+    -- Grand Final
+    INTO MatchTable (MatchID, TournamentID, MatchDate, Stage, TeamA, TeamB, MatchResultTeamA, MatchResultTeamB, WinnerTeam, WinningCondition)
+    VALUES (7, 1, TO_DATE('2025-12-15', 'YYYY-MM-DD'), 'Grand Final', 'Team Spirit', 'FaZe Clan', '2', '1', 'Team Spirit', 'Best of 3')
+SELECT * FROM dual;
+
+
+-- Insert all maps (MatchRecord)
+INSERT ALL
+    -- Match 1: The MongolZ vs MOUZ (0:2)
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (1, 1, TO_DATE('2025-12-11', 'YYYY-MM-DD'), 'The MongolZ', 'MOUZ', 'CT', '14-16', '7-5', '6-7', 'Loss', 'Win', 'Ancient')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (2, 1, TO_DATE('2025-12-11', 'YYYY-MM-DD'), 'The MongolZ', 'MOUZ', 'T', '9-13', '4-8', '5-5', 'Loss', 'Win', 'Nuke')
+
+    -- Match 2: Team Spirit vs Team Liquid (2:0)
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (3, 2, TO_DATE('2025-12-11', 'YYYY-MM-DD'), 'Team Spirit', 'Team Liquid', 'CT', '13-9', '8-4', '5-5', 'Win', 'Loss', 'Anubis')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (4, 2, TO_DATE('2025-12-11', 'YYYY-MM-DD'), 'Team Spirit', 'Team Liquid', 'T', '13-11', '6-6', '7-5', 'Win', 'Loss', 'Dust 2')
+
+    -- Match 3: G2 Esports vs HEROIC (2:1)
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (5, 3, TO_DATE('2025-12-12', 'YYYY-MM-DD'), 'G2 Esports', 'HEROIC', 'T', '6-13', '2-10', '4-3', 'Loss', 'Win', 'Ancient')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (6, 3, TO_DATE('2025-12-12', 'YYYY-MM-DD'), 'G2 Esports', 'HEROIC', 'CT', '13-9', '9-3', '4-6', 'Win', 'Loss', 'Nuke')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (7, 3, TO_DATE('2025-12-12', 'YYYY-MM-DD'), 'G2 Esports', 'HEROIC', 'CT', '16-13', '6-6', '7-7', 'Win', 'Loss', 'Mirage')
+
+    -- Match 4: Team Vitality vs FaZe Clan (1:2)
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (8, 4, TO_DATE('2025-12-12', 'YYYY-MM-DD'), 'Team Vitality', 'FaZe Clan', 'CT', '13-6', '10-2', '3-4', 'Win', 'Loss', 'Nuke')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (9, 4, TO_DATE('2025-12-12', 'YYYY-MM-DD'), 'Team Vitality', 'FaZe Clan', 'T', '8-13', '5-7', '3-6', 'Loss', 'Win', 'Mirage')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (10, 4, TO_DATE('2025-12-12', 'YYYY-MM-DD'), 'Team Vitality', 'FaZe Clan', 'CT', '7-13', '4-8', '3-5', 'Loss', 'Win', 'Anubis')
+
+    -- Match 5: MOUZ vs Team Spirit (1:2)
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (11, 5, TO_DATE('2025-12-14', 'YYYY-MM-DD'), 'MOUZ', 'Team Spirit', 'CT', '13-7', '9-3', '4-4', 'Win', 'Loss', 'Nuke')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (12, 5, TO_DATE('2025-12-14', 'YYYY-MM-DD'), 'MOUZ', 'Team Spirit', 'T', '4-13', '1-11', '3-2', 'Loss', 'Win', 'Ancient')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (13, 5, TO_DATE('2025-12-14', 'YYYY-MM-DD'), 'MOUZ', 'Team Spirit', 'CT', '7-13', '5-7', '2-6', 'Loss', 'Win', 'Mirage')
+
+    -- Match 6: G2 Esports vs FaZe Clan (0:2)
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (14, 6, TO_DATE('2025-12-14', 'YYYY-MM-DD'), 'G2 Esports', 'FaZe Clan', 'T', '6-13', '3-9', '3-4', 'Loss', 'Win', 'Ancient')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (15, 6, TO_DATE('2025-12-14', 'YYYY-MM-DD'), 'G2 Esports', 'FaZe Clan', 'CT', '14-16', '8-4', '4-8', 'Loss', 'Win', 'Nuke')
+
+    -- Match 7: Team Spirit vs FaZe Clan (2:1)
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (16, 7, TO_DATE('2025-12-15', 'YYYY-MM-DD'), 'Team Spirit', 'FaZe Clan', 'CT', '13-8', '7-5', '6-3', 'Win', 'Loss', 'Nuke')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (17, 7, TO_DATE('2025-12-15', 'YYYY-MM-DD'), 'Team Spirit', 'FaZe Clan', 'T', '6-13', '2-10', '4-3', 'Loss', 'Win', 'Ancient')
+    INTO MatchRecord (MatchRecordID, MatchID, RecordDate, TeamA, TeamB, StartingSide, FinalScore, TopHalfScore, BottomHalfScore, TeamAResult, TeamBResult, Map) 
+    VALUES (18, 7, TO_DATE('2025-12-15', 'YYYY-MM-DD'), 'Team Spirit', 'FaZe Clan', 'CT', '13-11', '6-6', '7-5', 'Win', 'Loss', 'Dust 2')
+SELECT * FROM dual;
+
+-- PlayerIngameData
+
+-- ======================================================
+-- MATCH 1: MOUZ vs The MongolZ
+-- ======================================================
+
+-- Map 1: Ancient (MatchRecordID: 1) | Score: 16:14 | Total Rounds: 30
+INSERT ALL
+    -- The MongolZ (TeamID: 1)
+    INTO PlayerMatchStats VALUES (1, 1, 'The MongolZ', 28, 22, 7, 1.44, 100.5, 0.73) -- mzinho 
+    INTO PlayerMatchStats VALUES (1, 2, 'The MongolZ', 28, 20, 3, 1.38, 84.7, 0.67)  -- Techno 
+    INTO PlayerMatchStats VALUES (1, 3, 'The MongolZ', 20, 18, 7, 0.98, 63.3, 0.60)  -- 910 
+    INTO PlayerMatchStats VALUES (1, 4, 'The MongolZ', 10, 24, 13, 0.66, 60.1, 0.80) -- bLitz
+    INTO PlayerMatchStats VALUES (1, 5, 'The MongolZ', 9, 20, 8, 0.48, 34.6, 0.67)   -- Senzu
+    -- MOUZ (TeamID: 2)
+    INTO PlayerMatchStats VALUES (1, 6, 'MOUZ', 26, 20, 9, 1.35, 101.1, 0.67) -- Brollan
+    INTO PlayerMatchStats VALUES (1, 8, 'MOUZ', 22, 24, 6, 1.11, 81.5, 0.80)  -- xertioN
+    INTO PlayerMatchStats VALUES (1, 7, 'MOUZ', 21, 17, 5, 1.11, 66.3, 0.57)  -- Jimpphat
+    INTO PlayerMatchStats VALUES (1, 9, 'MOUZ', 19, 20, 14, 1.10, 80.4, 0.67) -- siuhy
+    INTO PlayerMatchStats VALUES (1, 10, 'MOUZ', 16, 14, 7, 0.94, 50.3, 0.47) -- torzsi
+SELECT * FROM dual;
+
+-- Map 2: Nuke (MatchRecordID: 2) | Score: 13:9 | Total Rounds: 22
+INSERT ALL
+    -- The MongolZ (TeamID: 1)
+    INTO PlayerMatchStats VALUES (2, 1, 'The MongolZ', 18, 18, 3, 1.35, 88.0, 0.82) -- mzinho 
+    INTO PlayerMatchStats VALUES (2, 3, 'The MongolZ', 18, 16, 2, 1.09, 76.7, 0.73) -- 910 
+    INTO PlayerMatchStats VALUES (2, 4, 'The MongolZ', 13, 17, 2, 0.80, 66.7, 0.77) -- bLitz 
+    INTO PlayerMatchStats VALUES (2, 2, 'The MongolZ', 9, 17, 4, 0.67, 42.2, 0.77)  -- Techno 
+    INTO PlayerMatchStats VALUES (2, 5, 'The MongolZ', 9, 17, 3, 0.54, 50.6, 0.77)  -- Senzu 
+    -- MOUZ (TeamID: 2)
+    INTO PlayerMatchStats VALUES (2, 7, 'MOUZ', 21, 16, 8, 1.48, 115.4, 0.73) -- Jimpphat 
+    INTO PlayerMatchStats VALUES (2, 8, 'MOUZ', 17, 14, 3, 1.21, 72.9, 0.64)  -- xertioN 
+    INTO PlayerMatchStats VALUES (2, 6, 'MOUZ', 17, 14, 5, 1.20, 82.7, 0.64)  -- Brollan 
+    INTO PlayerMatchStats VALUES (2, 10, 'MOUZ', 16, 10, 3, 1.19, 72.8, 0.45) -- torzsi 
+    INTO PlayerMatchStats VALUES (2, 9, 'MOUZ', 13, 14, 7, 1.09, 51.5, 0.64)  -- siuhy 
+SELECT * FROM dual;
+
+-- ======================================================
+-- MATCH 2: Team Spirit vs Team Liquid
+-- ======================================================
+
+-- Map 3: Anubis (MatchRecordID: 3) | Score: 13:9 | Total Rounds: 22
+INSERT ALL
+    -- Team Spirit (TeamID: 3)
+    INTO PlayerMatchStats VALUES (3, 11, 'Team Spirit', 24, 13, 7, 1.72, 108.8, 0.59) -- donk
+    INTO PlayerMatchStats VALUES (3, 12, 'Team Spirit', 12, 8, 4, 1.20, 61.3, 0.36)  -- sh1ro
+    INTO PlayerMatchStats VALUES (3, 14, 'Team Spirit', 16, 11, 4, 1.14, 56.4, 0.50) -- zont1x
+    INTO PlayerMatchStats VALUES (3, 15, 'Team Spirit', 10, 14, 10, 0.94, 65.7, 0.64) -- magixx
+    INTO PlayerMatchStats VALUES (3, 13, 'Team Spirit', 9, 17, 10, 0.84, 59.0, 0.77)  -- chopper
+    -- Team Liquid (TeamID: 4)
+    INTO PlayerMatchStats VALUES (3, 20, 'Team Liquid', 16, 11, 4, 1.21, 78.6, 0.50) -- ultimate
+    INTO PlayerMatchStats VALUES (3, 19, 'Team Liquid', 14, 14, 5, 1.04, 83.4, 0.64) -- NAF
+    INTO PlayerMatchStats VALUES (3, 18, 'Team Liquid', 14, 16, 3, 0.96, 66.0, 0.73) -- YEKINDAR
+    INTO PlayerMatchStats VALUES (3, 17, 'Team Liquid', 10, 15, 8, 0.72, 61.2, 0.68) -- jks
+    INTO PlayerMatchStats VALUES (3, 16, 'Team Liquid', 9, 15, 5, 0.72, 51.9, 0.68)  -- Twistzz
+SELECT * FROM dual;
+
+-- Map 4: Dust 2 (MatchRecordID: 4) | Score: 13:11 | Total Rounds: 24
+INSERT ALL
+    -- Team Spirit (TeamID: 3)
+    INTO PlayerMatchStats VALUES (4, 11, 'Team Spirit', 23, 12, 6, 1.68, 100.2, 0.50) -- donk
+    INTO PlayerMatchStats VALUES (4, 13, 'Team Spirit', 18, 16, 9, 1.26, 88.0, 0.67)  -- chopper
+    INTO PlayerMatchStats VALUES (4, 12, 'Team Spirit', 19, 12, 6, 1.16, 82.5, 0.50)  -- sh1ro
+    INTO PlayerMatchStats VALUES (4, 14, 'Team Spirit', 14, 12, 4, 0.94, 60.0, 0.50)  -- zont1x
+    INTO PlayerMatchStats VALUES (4, 15, 'Team Spirit', 14, 14, 5, 0.85, 62.8, 0.58)  -- magixx
+    -- Team Liquid (TeamID: 4)
+    INTO PlayerMatchStats VALUES (4, 16, 'Team Liquid', 20, 14, 7, 1.65, 82.6, 0.58) -- Twistzz
+    INTO PlayerMatchStats VALUES (4, 17, 'Team Liquid', 14, 16, 8, 1.13, 70.5, 0.67) -- jks
+    INTO PlayerMatchStats VALUES (4, 18, 'Team Liquid', 9, 18, 3, 0.80, 53.9, 0.75)  -- YEKINDAR
+    INTO PlayerMatchStats VALUES (4, 19, 'Team Liquid', 13, 19, 5, 0.71, 61.5, 0.79) -- NAF
+    INTO PlayerMatchStats VALUES (4, 20, 'Team Liquid', 9, 21, 4, 0.48, 40.0, 0.88)  -- ultimate
+SELECT * FROM dual;
+
+-- ======================================================
+-- MATCH 3: G2 Esports vs HEROIC
+-- ======================================================
+
+-- Map 5: Ancient (MatchRecordID: 5) | Score: 6:13 | Total Rounds: 19
+INSERT ALL
+    -- G2 Esports (TeamID: 5)
+    INTO PlayerMatchStats VALUES (5, 21, 'G2 Esports', 22, 12, 4, 1.65, 112.6, 0.63) -- NiKo
+    INTO PlayerMatchStats VALUES (5, 22, 'G2 Esports', 16, 13, 3, 1.14, 91.8, 0.68)  -- m0NESY
+    INTO PlayerMatchStats VALUES (5, 23, 'G2 Esports', 13, 14, 2, 0.88, 62.5, 0.74)  -- malbsMd
+    INTO PlayerMatchStats VALUES (5, 25, 'G2 Esports', 8, 14, 6, 0.68, 59.8, 0.74)   -- huNter-
+    INTO PlayerMatchStats VALUES (5, 24, 'G2 Esports', 7, 14, 6, 0.63, 51.1, 0.74)   -- Snax
+    -- HEROIC (TeamID: 6)
+    INTO PlayerMatchStats VALUES (5, 26, 'HEROIC', 18, 10, 2, 1.49, 83.1, 0.53)  -- degster
+    INTO PlayerMatchStats VALUES (5, 28, 'HEROIC', 16, 14, 5, 1.30, 101.2, 0.74) -- NertZ
+    INTO PlayerMatchStats VALUES (5, 27, 'HEROIC', 13, 13, 4, 1.23, 79.1, 0.68)  -- TeSeS
+    INTO PlayerMatchStats VALUES (5, 29, 'HEROIC', 8, 15, 7, 0.91, 51.7, 0.79)   -- sjuush
+    INTO PlayerMatchStats VALUES (5, 30, 'HEROIC', 10, 15, 6, 0.82, 65.3, 0.79)  -- kyxsan
+SELECT * FROM dual;
+
+-- Map 6: Nuke (MatchRecordID: 6) | Score: 13:9 | Total Rounds: 22
+INSERT ALL
+    -- G2 Esports (TeamID: 5)
+    INTO PlayerMatchStats VALUES (6, 21, 'G2 Esports', 26, 13, 9, 2.00, 127.9, 0.59) -- NiKo
+    INTO PlayerMatchStats VALUES (6, 22, 'G2 Esports', 21, 12, 4, 1.66, 91.1, 0.55)  -- m0NESY
+    INTO PlayerMatchStats VALUES (6, 23, 'G2 Esports', 14, 16, 0, 1.02, 61.0, 0.73)  -- malbsMd
+    INTO PlayerMatchStats VALUES (6, 24, 'G2 Esports', 8, 14, 8, 0.77, 54.7, 0.64)   -- Snax
+    INTO PlayerMatchStats VALUES (6, 25, 'G2 Esports', 9, 13, 4, 0.66, 42.3, 0.59)   -- huNter-
+    -- HEROIC (TeamID: 6)
+    INTO PlayerMatchStats VALUES (6, 29, 'HEROIC', 16, 14, 5, 1.27, 79.3, 0.64)  -- sjuush
+    INTO PlayerMatchStats VALUES (6, 27, 'HEROIC', 18, 15, 3, 1.20, 84.2, 0.68)  -- TeSeS
+    INTO PlayerMatchStats VALUES (6, 30, 'HEROIC', 15, 17, 5, 1.07, 68.6, 0.77)  -- kyxsan
+    INTO PlayerMatchStats VALUES (6, 28, 'HEROIC', 13, 18, 5, 0.69, 68.8, 0.82)  -- NertZ
+    INTO PlayerMatchStats VALUES (6, 26, 'HEROIC', 6, 16, 2, 0.39, 39.8, 0.73)   -- degster
+SELECT * FROM dual;
+
+-- Map 7: Mirage (MatchRecordID: 7) | Score: 16:13 | Total Rounds: 29
+INSERT ALL
+    -- G2 Esports (TeamID: 5)
+    INTO PlayerMatchStats VALUES (7, 23, 'G2 Esports', 28, 16, 2, 1.68, 96.3, 0.55) -- malbsMd
+    INTO PlayerMatchStats VALUES (7, 22, 'G2 Esports', 19, 17, 9, 1.14, 69.7, 0.59) -- m0NESY
+    INTO PlayerMatchStats VALUES (7, 24, 'G2 Esports', 19, 18, 8, 1.11, 75.8, 0.62) -- Snax
+    INTO PlayerMatchStats VALUES (7, 25, 'G2 Esports', 17, 17, 6, 0.99, 63.0, 0.59) -- huNter-
+    INTO PlayerMatchStats VALUES (7, 21, 'G2 Esports', 17, 22, 8, 0.76, 71.7, 0.76) -- NiKo
+    -- HEROIC (TeamID: 6)
+    INTO PlayerMatchStats VALUES (7, 26, 'HEROIC', 25, 18, 4, 1.45, 88.2, 0.62) -- degster
+    INTO PlayerMatchStats VALUES (7, 28, 'HEROIC', 24, 19, 4, 1.14, 84.3, 0.66) -- NertZ
+    INTO PlayerMatchStats VALUES (7, 27, 'HEROIC', 18, 24, 2, 0.85, 66.5, 0.83) -- TeSeS
+    INTO PlayerMatchStats VALUES (7, 30, 'HEROIC', 11, 21, 4, 0.71, 50.4, 0.72) -- kyxsan
+    INTO PlayerMatchStats VALUES (7, 29, 'HEROIC', 11, 20, 10, 0.65, 67.4, 0.69) -- sjuush
+SELECT * FROM dual;
+
+-- ======================================================
+-- MATCH 4: Team Vitality vs FaZe Clan
+-- ======================================================
+
+-- Map 8: Nuke (MatchRecordID: 8) | Score: 13:6 | Total Rounds: 19
+INSERT ALL
+    -- Team Vitality (TeamID: 7)
+    INTO PlayerMatchStats VALUES (8, 31, 'Team Vitality', 17, 11, 2, 1.56, 93.1, 0.58) -- flameZ
+    INTO PlayerMatchStats VALUES (8, 32, 'Team Vitality', 15, 7, 4, 1.40, 75.1, 0.37)  -- ZywOo
+    INTO PlayerMatchStats VALUES (8, 33, 'Team Vitality', 17, 12, 5, 1.31, 97.2, 0.63) -- Spinx
+    INTO PlayerMatchStats VALUES (8, 34, 'Team Vitality', 14, 11, 7, 1.17, 83.1, 0.58) -- apEX
+    INTO PlayerMatchStats VALUES (8, 35, 'Team Vitality', 12, 11, 3, 0.99, 73.3, 0.58) -- mezii
+    -- FaZe Clan (TeamID: 8)
+    INTO PlayerMatchStats VALUES (8, 36, 8, 22, 13, 2, 1.93, 117.1, 0.68) -- ropz
+    INTO PlayerMatchStats VALUES (8, 37, 8, 9, 14, 3, 0.76, 60.7, 0.74)  -- broky
+    INTO PlayerMatchStats VALUES (8, 38, 8, 7, 14, 5, 0.73, 45.0, 0.74)  -- frozen
+    INTO PlayerMatchStats VALUES (8, 39, 8, 6, 18, 5, 0.50, 42.4, 0.95)  -- karrigan
+    INTO PlayerMatchStats VALUES (8, 40, 8, 8, 17, 3, 0.46, 52.3, 0.89)  -- rain
+SELECT * FROM dual;
+
+-- Map 9: Mirage (MatchRecordID: 9) | Score: 8:13 | Total Rounds: 21
+INSERT ALL
+    -- Team Vitality (TeamID: 7)
+    INTO PlayerMatchStats VALUES (9, 31, 'Team Vitality', 17, 15, 2, 1.05, 82.5, 0.71) -- flameZ
+    INTO PlayerMatchStats VALUES (9, 33, 'Team Vitality', 13, 14, 3, 0.95, 64.9, 0.67) -- Spinx
+    INTO PlayerMatchStats VALUES (9, 32, 'Team Vitality', 12, 12, 2, 0.94, 58.5, 0.57) -- ZywOo
+    INTO PlayerMatchStats VALUES (9, 35, 'Team Vitality', 12, 13, 6, 0.75, 62.8, 0.62) -- mezii
+    INTO PlayerMatchStats VALUES (9, 34, 'Team Vitality', 8, 16, 6, 0.66, 57.7, 0.76)  -- apEX
+    -- FaZe Clan (TeamID: 8)
+    INTO PlayerMatchStats VALUES (9, 38, 'FaZe Clan', 15, 11, 1, 1.53, 79.1, 0.52) -- frozen
+    INTO PlayerMatchStats VALUES (9, 37, 'FaZe Clan', 17, 11, 3, 1.48, 93.0, 0.52) -- broky
+    INTO PlayerMatchStats VALUES (9, 40, 'FaZe Clan', 15, 13, 6, 1.25, 83.1, 0.62) -- rain
+    INTO PlayerMatchStats VALUES (9, 39, 'FaZe Clan', 11, 15, 5, 0.94, 57.8, 0.71) -- karrigan
+    INTO PlayerMatchStats VALUES (9, 36, 'FaZe Clan', 11, 12, 4, 0.84, 55.6, 0.57) -- ropz
+SELECT * FROM dual;
+
+-- Map 10: Anubis (MatchRecordID: 10) | Score: 7:13 | Total Rounds: 20
+INSERT ALL
+    -- Team Vitality (TeamID: 7)
+    INTO PlayerMatchStats VALUES (10, 32, 'Team Vitality', 21, 15, 1, 1.53, 112.0, 0.75) -- ZywOo
+    INTO PlayerMatchStats VALUES (10, 33, 'Team Vitality', 11, 17, 10, 0.98, 72.5, 0.85) -- Spinx
+    INTO PlayerMatchStats VALUES (10, 35, 'Team Vitality', 11, 16, 4, 0.72, 67.5, 0.80) -- mezii
+    INTO PlayerMatchStats VALUES (10, 31, 'Team Vitality', 9, 17, 5, 0.63, 54.1, 0.85)  -- flameZ
+    INTO PlayerMatchStats VALUES (10, 34, 'Team Vitality', 8, 17, 6, 0.52, 46.2, 0.85)  -- apEX
+    -- FaZe Clan (TeamID: 8)
+    INTO PlayerMatchStats VALUES (10, 36, 'FaZe Clan', 28, 10, 3, 2.07, 111.2, 0.50) -- ropz
+    INTO PlayerMatchStats VALUES (10, 37, 'FaZe Clan', 14, 10, 6, 1.23, 84.8, 0.50)  -- broky
+    INTO PlayerMatchStats VALUES (10, 38, 'FaZe Clan', 15, 13, 5, 1.23, 82.2, 0.65)  -- frozen
+    INTO PlayerMatchStats VALUES (10, 39, 'FaZe Clan', 14, 14, 5, 1.09, 71.2, 0.70)  -- karrigan
+    INTO PlayerMatchStats VALUES (10, 40, 'FaZe Clan', 10, 13, 9, 1.02, 74.0, 0.65)  -- rain
+SELECT * FROM dual;
+
+-- ======================================================
+-- MATCH 5: MOUZ vs Team Spirit
+-- ======================================================
+
+-- Map 11: Nuke (MatchRecordID: 11)
+INSERT ALL
+    -- MOUZ (TeamID: 9)
+    INTO PlayerMatchStats VALUES (11, 6, 'MOUZ', 20, 12, 5, 1.77, 113.8, 0.60)  -- Brollan (ID: 6)
+    INTO PlayerMatchStats VALUES (11, 10, 'MOUZ', 17, 10, 3, 1.37, 66.7, 0.50) -- torzsi (ID: 10)
+    INTO PlayerMatchStats VALUES (11, 8, 'MOUZ', 14, 9, 4, 1.35, 71.8, 0.45)   -- xertioN (ID: 8)
+    INTO PlayerMatchStats VALUES (11, 9, 'MOUZ', 15, 13, 7, 1.18, 76.3, 0.65)  -- siuhy (ID: 9)
+    INTO PlayerMatchStats VALUES (11, 7, 'MOUZ', 9, 11, 7, 0.84, 71.0, 0.55)   -- Jimpphat (ID: 7)
+    
+    -- Team Spirit (TeamID: 3)
+    INTO PlayerMatchStats VALUES (11, 12, 'Team Spirit', 21, 13, 4, 1.57, 90.1, 0.65) -- sh1ro
+    INTO PlayerMatchStats VALUES (11, 14, 'Team Spirit', 9, 16, 5, 0.88, 73.5, 0.80)  -- zont1x
+    INTO PlayerMatchStats VALUES (11, 13, 'Team Spirit', 9, 15, 6, 0.77, 50.0, 0.75)  -- chopper
+    INTO PlayerMatchStats VALUES (11, 15, 'Team Spirit', 10, 15, 3, 0.77, 68.8, 0.75) -- magixx
+    INTO PlayerMatchStats VALUES (11, 11, 'Team Spirit', 6, 17, 1, 0.36, 40.2, 0.85)  -- donk
+SELECT * FROM dual;
+
+-- Map 12: Ancient (MatchRecordID: 12) | Score: 4:13 | Total Rounds: 17
+INSERT ALL
+    -- MOUZ (TeamID: 9)
+    INTO PlayerMatchStats VALUES (12, 7, 'MOUZ', 18, 13, 5, 1.40, 101.3, 0.76) -- Jimpphat
+    INTO PlayerMatchStats VALUES (12, 10, 'MOUZ', 10, 13, 4, 0.87, 55.9, 0.76)  -- torzsi
+    INTO PlayerMatchStats VALUES (12, 6, 'MOUZ', 8, 13, 1, 0.80, 55.0, 0.76)   -- Brollan
+    INTO PlayerMatchStats VALUES (12, 9, 'MOUZ', 7, 14, 6, 0.62, 65.0, 0.82)   -- siuhy
+    INTO PlayerMatchStats VALUES (12, 8, 'MOUZ', 4, 16, 5, 0.38, 54.5, 0.94)   -- xertioN
+    -- Team Spirit (TeamID: 3)
+    INTO PlayerMatchStats VALUES (12, 15, 'Team Spirit', 19, 7, 4, 1.80, 110.4, 0.41) -- magixx
+    INTO PlayerMatchStats VALUES (12, 11, 'Team Spirit', 17, 12, 6, 1.55, 99.5, 0.71) -- donk
+    INTO PlayerMatchStats VALUES (12, 12, 'Team Spirit', 15, 8, 3, 1.51, 77.5, 0.47)  -- sh1ro
+    INTO PlayerMatchStats VALUES (12, 13, 'Team Spirit', 10, 10, 9, 1.12, 69.7, 0.59) -- chopper
+    INTO PlayerMatchStats VALUES (12, 14, 'Team Spirit', 8, 10, 7, 0.99, 66.9, 0.59)  -- zont1x
+SELECT * FROM dual;
+
+-- Map 13: Mirage (MatchRecordID: 13) | Score: 7:13 | Total Rounds: 20
+INSERT ALL
+    -- MOUZ (TeamID: 9)
+    INTO PlayerMatchStats VALUES (13, 9, 'MOUZ', 12, 16, 11, 1.16, 84.3, 0.80) -- siuhy
+    INTO PlayerMatchStats VALUES (13, 10, 'MOUZ', 13, 15, 4, 0.92, 57.5, 0.75)  -- torzsi
+    INTO PlayerMatchStats VALUES (13, 7, 'MOUZ', 11, 14, 1, 0.76, 53.4, 0.70)  -- Jimpphat
+    INTO PlayerMatchStats VALUES (13, 8, 'MOUZ', 9, 17, 5, 0.74, 68.8, 0.85)   -- xertioN
+    INTO PlayerMatchStats VALUES (13, 6, 'MOUZ', 9, 17, 3, 0.64, 57.9, 0.85)   -- Brollan
+    -- Team Spirit (TeamID: 3)
+    INTO PlayerMatchStats VALUES (13, 11, 'Team Spirit', 19, 14, 6, 1.40, 99.0, 0.70) -- donk
+    INTO PlayerMatchStats VALUES (13, 12, 'Team Spirit', 18, 10, 4, 1.35, 78.3, 0.50) -- sh1ro
+    INTO PlayerMatchStats VALUES (13, 13, 'Team Spirit', 15, 11, 6, 1.31, 83.5, 0.55) -- chopper
+    INTO PlayerMatchStats VALUES (13, 15, 'Team Spirit', 12, 8, 6, 1.25, 74.8, 0.40)  -- magixx
+    INTO PlayerMatchStats VALUES (13, 14, 'Team Spirit', 13, 11, 6, 1.09, 72.0, 0.55) -- zont1x
+SELECT * FROM dual;
+
+-- ======================================================
+-- MATCH 6: G2 Esports vs FaZe Clan
+-- ======================================================
+
+-- Map 14: Ancient (MatchRecordID: 14) | Score: 6:13 | Total Rounds: 19
+INSERT ALL
+    -- G2 Esports (TeamID: 5)
+    INTO PlayerMatchStats VALUES (14, 25, 'G2 Esports', 18, 14, 3, 1.30, 102.9, 0.74) -- huNter-
+    INTO PlayerMatchStats VALUES (14, 21, 'G2 Esports', 14, 17, 4, 1.07, 70.1, 0.89)  -- NiKo
+    INTO PlayerMatchStats VALUES (14, 22, 'G2 Esports', 8, 12, 4, 0.83, 68.9, 0.63)   -- m0NESY
+    INTO PlayerMatchStats VALUES (14, 24, 'G2 Esports', 10, 14, 6, 0.73, 69.7, 0.74)  -- Snax
+    INTO PlayerMatchStats VALUES (14, 23, 'G2 Esports', 8, 16, 5, 0.66, 64.5, 0.84)   -- malbsMd
+    -- FaZe Clan (TeamID: 8)
+    INTO PlayerMatchStats VALUES (14, 36, 'FaZe Clan', 22, 14, 7, 1.65, 117.7, 0.74) -- ropz
+    INTO PlayerMatchStats VALUES (14, 37, 'FaZe Clan', 18, 9, 4, 1.59, 86.6, 0.47)   -- broky
+    INTO PlayerMatchStats VALUES (14, 40, 'FaZe Clan', 11, 10, 7, 1.30, 83.3, 0.53)  -- rain
+    INTO PlayerMatchStats VALUES (14, 39, 'FaZe Clan', 11, 14, 3, 0.94, 55.9, 0.74)  -- karrigan
+    INTO PlayerMatchStats VALUES (14, 38, 'FaZe Clan', 9, 13, 3, 0.79, 58.2, 0.68)   -- frozen
+SELECT * FROM dual;
+
+-- Map 15: Nuke (MatchRecordID: 15) | Score: 14:16 | Total Rounds: 30
+INSERT ALL
+    -- G2 Esports (TeamID: 5)
+    INTO PlayerMatchStats VALUES (15, 24, 'G2 Esports', 24, 20, 6, 1.42, 84.2, 0.67) -- Snax
+    INTO PlayerMatchStats VALUES (15, 25, 'G2 Esports', 24, 23, 4, 1.00, 85.2, 0.77) -- huNter-
+    INTO PlayerMatchStats VALUES (15, 23, 'G2 Esports', 16, 23, 7, 0.91, 68.7, 0.77) -- malbsMd
+    INTO PlayerMatchStats VALUES (15, 22, 'G2 Esports', 19, 21, 7, 0.84, 72.2, 0.70) -- m0NESY
+    INTO PlayerMatchStats VALUES (15, 21, 'G2 Esports', 17, 21, 3, 0.76, 46.4, 0.70) -- NiKo
+    -- FaZe Clan (TeamID: 8)
+    INTO PlayerMatchStats VALUES (15, 36, 'FaZe Clan', 28, 21, 10, 1.38, 96.3, 0.70) -- ropz
+    INTO PlayerMatchStats VALUES (15, 37, 'FaZe Clan', 24, 19, 5, 1.31, 71.4, 0.63)  -- broky
+    INTO PlayerMatchStats VALUES (15, 38, 'FaZe Clan', 22, 19, 6, 1.25, 81.8, 0.63)  -- frozen
+    INTO PlayerMatchStats VALUES (15, 40, 'FaZe Clan', 25, 21, 7, 1.21, 89.7, 0.70)  -- rain
+    INTO PlayerMatchStats VALUES (15, 39, 'FaZe Clan', 9, 21, 10, 0.74, 51.3, 0.70)  -- karrigan
+SELECT * FROM dual;
+
+-- ======================================================
+-- MATCH 7: Team Spirit vs FaZe Clan
+-- ======================================================
+
+-- Map 16: Nuke (MatchRecordID: 16) | Score: 13:8 | Total Rounds: 21
+INSERT ALL
+    -- Team Spirit (TeamID: 3)
+    INTO PlayerMatchStats VALUES (16, 11, 'Team Spirit', 20, 14, 7, 1.75, 112.8, 0.67) -- donk
+    INTO PlayerMatchStats VALUES (16, 15, 'Team Spirit', 25, 10, 3, 1.58, 115.2, 0.48) -- magixx
+    INTO PlayerMatchStats VALUES (16, 13, 'Team Spirit', 14, 13, 5, 1.09, 78.0, 0.62)  -- chopper
+    INTO PlayerMatchStats VALUES (16, 12, 'Team Spirit', 12, 10, 2, 0.98, 52.3, 0.48)  -- sh1ro
+    INTO PlayerMatchStats VALUES (16, 14, 'Team Spirit', 12, 14, 2, 0.77, 64.8, 0.67)  -- zont1x
+    -- FaZe Clan (TeamID: 8)
+    INTO PlayerMatchStats VALUES (16, 40, 'FaZe Clan', 16, 17, 3, 1.34, 82.3, 0.81) -- rain
+    INTO PlayerMatchStats VALUES (16, 37, 'FaZe Clan', 14, 17, 6, 1.01, 81.9, 0.81) -- broky
+    INTO PlayerMatchStats VALUES (16, 39, 'FaZe Clan', 10, 16, 3, 0.84, 52.6, 0.76) -- karrigan
+    INTO PlayerMatchStats VALUES (16, 36, 'FaZe Clan', 12, 17, 4, 0.82, 64.6, 0.81) -- ropz
+    INTO PlayerMatchStats VALUES (16, 38, 'FaZe Clan', 7, 17, 5, 0.56, 50.9, 0.81)  -- frozen
+SELECT * FROM dual;
+
+-- Map 17: Ancient (MatchRecordID: 17) | Score: 6:13 | Total Rounds: 19
+INSERT ALL
+    -- Team Spirit (TeamID: 3)
+    INTO PlayerMatchStats VALUES (17, 15, 'Team Spirit', 22, 15, 3, 1.64, 109.2, 0.79) -- magixx
+    INTO PlayerMatchStats VALUES (17, 11, 'Team Spirit', 19, 16, 3, 1.43, 99.5, 0.84)  -- donk
+    INTO PlayerMatchStats VALUES (17, 14, 'Team Spirit', 6, 16, 7, 0.59, 43.8, 0.84)   -- zont1x
+    INTO PlayerMatchStats VALUES (17, 13, 'Team Spirit', 7, 16, 5, 0.54, 56.4, 0.84)   -- chopper
+    INTO PlayerMatchStats VALUES (17, 12, 'Team Spirit', 4, 15, 7, 0.44, 46.1, 0.79)   -- sh1ro
+    -- FaZe Clan (TeamID: 8)
+    INTO PlayerMatchStats VALUES (17, 36, 'FaZe Clan', 25, 12, 5, 1.72, 107.6, 0.63) -- ropz
+    INTO PlayerMatchStats VALUES (17, 38, 'FaZe Clan', 18, 14, 12, 1.57, 123.4, 0.74) -- frozen
+    INTO PlayerMatchStats VALUES (17, 40, 'FaZe Clan', 15, 12, 5, 1.22, 77.9, 0.63)  -- rain
+    INTO PlayerMatchStats VALUES (17, 37, 'FaZe Clan', 13, 11, 6, 1.02, 71.4, 0.58)  -- broky
+    INTO PlayerMatchStats VALUES (17, 39, 'FaZe Clan', 6, 11, 5, 0.71, 42.8, 0.58)   -- karrigan
+SELECT * FROM dual;
+
+-- Map 18: Dust2 (MatchRecordID: 18) | Score: 13:11 | Total Rounds: 24
+INSERT ALL
+    -- Team Spirit (TeamID: 3)
+    INTO PlayerMatchStats VALUES (18, 11, 'Team Spirit', 30, 14, 5, 1.84, 117.4, 0.58) -- donk
+    INTO PlayerMatchStats VALUES (18, 15, 'Team Spirit', 22, 14, 4, 1.63, 101.6, 0.58) -- magixx
+    INTO PlayerMatchStats VALUES (18, 12, 'Team Spirit', 15, 11, 4, 1.14, 76.6, 0.46)  -- sh1ro
+    INTO PlayerMatchStats VALUES (18, 14, 'Team Spirit', 16, 16, 3, 0.91, 64.5, 0.67)  -- zont1x
+    INTO PlayerMatchStats VALUES (18, 13, 'Team Spirit', 6, 17, 8, 0.48, 43.1, 0.71)   -- chopper
+    -- FaZe Clan (TeamID: 8)
+    INTO PlayerMatchStats VALUES (18, 37, 'FaZe Clan', 18, 16, 4, 1.15, 74.5, 0.67) -- broky
+    INTO PlayerMatchStats VALUES (18, 40, 'FaZe Clan', 16, 17, 9, 1.11, 58.1, 0.71) -- rain
+    INTO PlayerMatchStats VALUES (18, 36, 'FaZe Clan', 16, 16, 5, 1.09, 67.0, 0.67) -- ropz
+    INTO PlayerMatchStats VALUES (18, 38, 'FaZe Clan', 12, 19, 6, 0.84, 70.6, 0.79) -- frozen
+    INTO PlayerMatchStats VALUES (18, 39, 'FaZe Clan', 10, 22, 7, 0.73, 54.2, 0.92) -- karrigan
+SELECT * FROM dual;
+
+COMMIT;

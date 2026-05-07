@@ -1,0 +1,35 @@
+-- Delete data except people
+DELETE FROM TeamMatchRecord;[cite: 2]
+DELETE FROM TournamentParticipation;[cite: 2]
+DELETE FROM MatchRecord;[cite: 2]
+DELETE FROM MatchTable;[cite: 2]
+DELETE FROM Tournament;[cite: 2]
+COMMIT;
+
+-- Run Large Data Set
+@"D:\school\COMPX323\Group Project\Milestone 2\mega_dataset.sql";
+
+
+-- count
+-- large tables
+SELECT 'Tournament' as Table_Name, COUNT(*) as Row_Count FROM Tournament
+UNION ALL
+SELECT 'MatchTable', COUNT(*) FROM MatchTable
+UNION ALL
+SELECT 'MatchRecord', COUNT(*) FROM MatchRecord
+UNION ALL
+SELECT 'PlayerMatchStats', COUNT(*) FROM PlayerMatchStats
+UNION ALL
+SELECT 'TournamentParticipation', COUNT(*) FROM TournamentParticipation;
+-- small tables
+SELECT 'People' as Table_Name, COUNT(*) as Row_Count FROM People
+UNION ALL
+SELECT 'Player', COUNT(*) FROM Player
+UNION ALL
+SELECT 'Coach', COUNT(*) FROM Coach
+UNION ALL
+SELECT 'Team', COUNT(*) FROM Team
+UNION ALL
+SELECT 'PlayerContract', COUNT(*) FROM PlayerContract
+UNION ALL
+SELECT 'CoachContract', COUNT(*) FROM CoachContract;

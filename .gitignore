@@ -1,0 +1,5 @@
+/app.properties
+/out/
+/target/
+/lib/*.jar
+

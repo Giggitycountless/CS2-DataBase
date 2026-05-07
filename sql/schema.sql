@@ -1,0 +1,198 @@
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE PlayerMatchStats CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE TeamMatchRecord CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE TournamentParticipation CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE MatchRecord CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE MatchTable CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE PlayerContract CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE CoachContract CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE Player CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE Coach CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE Tournament CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE Team CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE People CASCADE CONSTRAINTS';
+EXCEPTION WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+CREATE TABLE People (
+    PersonID NUMBER(10) PRIMARY KEY,
+    Nickname VARCHAR2(50),
+    FullName VARCHAR2(100),
+    Birthday DATE,
+    Nationality VARCHAR2(50)
+);
+
+CREATE TABLE Player (
+    PersonID NUMBER(10) PRIMARY KEY,
+    Rating NUMBER(4,2),
+    ADR NUMBER(5,2),
+    DPR NUMBER(5,2),
+    CONSTRAINT fk_player_people FOREIGN KEY (PersonID) REFERENCES People(PersonID)
+);
+
+CREATE TABLE Coach (
+    PersonID NUMBER(10) PRIMARY KEY,
+    WinRate NUMBER(5,2),
+    CONSTRAINT fk_coach_people FOREIGN KEY (PersonID) REFERENCES People(PersonID)
+);
+
+CREATE TABLE Team (
+    TeamName VARCHAR2(100) PRIMARY KEY,
+    Region VARCHAR2(50)
+);
+
+CREATE TABLE PlayerContract (
+    PlayerContractID NUMBER(10) PRIMARY KEY,
+    PersonID NUMBER(10),
+    TeamName VARCHAR2(100),
+    StartDate DATE,
+    EndDate DATE,
+    InGameRole VARCHAR2(50),
+    CONSTRAINT fk_player_contract_player FOREIGN KEY (PersonID) REFERENCES Player(PersonID),
+    CONSTRAINT fk_player_contract_team FOREIGN KEY (TeamName) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE CoachContract (
+    CoachContractID NUMBER(10) PRIMARY KEY,
+    PersonID NUMBER(10),
+    TeamName VARCHAR2(100),
+    StartDate DATE,
+    EndDate DATE,
+    CONSTRAINT fk_coach_contract_coach FOREIGN KEY (PersonID) REFERENCES Coach(PersonID),
+    CONSTRAINT fk_coach_contract_team FOREIGN KEY (TeamName) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE Tournament (
+    TournamentID NUMBER(10) PRIMARY KEY,
+    TournamentName VARCHAR2(100),
+    TournyStartDate DATE,
+    TournyEndDate DATE
+);
+
+CREATE TABLE MatchTable (
+    MatchID NUMBER(10) PRIMARY KEY,
+    TournamentID NUMBER(10),
+    MatchDate DATE,
+    Stage VARCHAR2(50),
+    TeamA VARCHAR2(100),
+    TeamB VARCHAR2(100),
+    MatchResultTeamA VARCHAR2(50),
+    MatchResultTeamB VARCHAR2(50),
+    WinnerTeam VARCHAR2(100),
+    WinningCondition VARCHAR2(100),
+    CONSTRAINT fk_match_tournament FOREIGN KEY (TournamentID) REFERENCES Tournament(TournamentID),
+    CONSTRAINT fk_match_team_a FOREIGN KEY (TeamA) REFERENCES Team(TeamName),
+    CONSTRAINT fk_match_team_b FOREIGN KEY (TeamB) REFERENCES Team(TeamName),
+    CONSTRAINT fk_match_winner FOREIGN KEY (WinnerTeam) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE MatchRecord (
+    MatchRecordID NUMBER(10) PRIMARY KEY,
+    MatchID NUMBER(10),
+    RecordDate DATE,
+    TeamA VARCHAR2(100),
+    TeamB VARCHAR2(100),
+    StartingSide VARCHAR2(50),
+    FinalScore VARCHAR2(20),
+    TopHalfScore VARCHAR2(20),
+    BottomHalfScore VARCHAR2(20),
+    TeamAResult VARCHAR2(50),
+    TeamBResult VARCHAR2(50),
+    Map VARCHAR2(50),
+    CONSTRAINT fk_record_match FOREIGN KEY (MatchID) REFERENCES MatchTable(MatchID),
+    CONSTRAINT fk_record_team_a FOREIGN KEY (TeamA) REFERENCES Team(TeamName),
+    CONSTRAINT fk_record_team_b FOREIGN KEY (TeamB) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE PlayerMatchStats (
+    MatchRecordID NUMBER(10) NOT NULL,
+    PlayerID NUMBER(10) NOT NULL,
+    TeamName VARCHAR2(100),
+    Kills NUMBER(10) DEFAULT 0,
+    Deaths NUMBER(10) DEFAULT 0,
+    Assists NUMBER(10) DEFAULT 0,
+    Rating NUMBER(3,2),
+    ADR NUMBER(4,1),
+    DPR NUMBER(3,2),
+    CONSTRAINT pk_player_match_stats PRIMARY KEY (MatchRecordID, PlayerID),
+    CONSTRAINT fk_pms_record FOREIGN KEY (MatchRecordID) REFERENCES MatchRecord(MatchRecordID),
+    CONSTRAINT fk_pms_player FOREIGN KEY (PlayerID) REFERENCES Player(PersonID),
+    CONSTRAINT fk_pms_team FOREIGN KEY (TeamName) REFERENCES Team(TeamName)
+);
+
+CREATE TABLE TournamentParticipation (
+    TournamentID NUMBER(10),
+    TeamName VARCHAR2(100),
+    Placement VARCHAR2(50),
+    CONSTRAINT pk_tournament_participation PRIMARY KEY (TournamentID, TeamName),
+    CONSTRAINT fk_tp_tournament FOREIGN KEY (TournamentID) REFERENCES Tournament(TournamentID),
+    CONSTRAINT fk_tp_team FOREIGN KEY (TeamName) REFERENCES Team(TeamName)
+);
