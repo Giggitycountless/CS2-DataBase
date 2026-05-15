@@ -18,9 +18,11 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -30,6 +32,19 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class MainFrame extends JFrame {
+
+    // ── CS2-inspired dark palette ──
+    private static final Color ACCENT       = new Color(0xDE9B35);  // gold/amber
+    private static final Color ACCENT_DIM   = new Color(0x8B6914);
+    private static final Color BG_DARKER    = new Color(0x1A1A24);
+    private static final Color BG_CARD      = new Color(0x242436);
+    private static final Color TEXT_PRIMARY = new Color(0xE8E8E8);
+    private static final Color TEXT_MUTED   = new Color(0x8E8E9A);
+    private static final Color BORDER_SUBTLE = new Color(0x363650);
+    private static final Color TABLE_ALT    = new Color(0x1E1E2E);
+    private static final Color TABLE_HEADER_BG = new Color(0x2A2A40);
+    private static final Color METRIC_BG    = new Color(0x2A2A42);
+
     private static final String HOME = "Home";
     private static final String PLAYERS = "Players";
     private static final String TEAMS = "Teams";
@@ -41,8 +56,11 @@ public final class MainFrame extends JFrame {
     private final JPanel cards = new JPanel(cardLayout);
     private final JTextField searchField = new JTextField();
     private final JLabel statusLabel = new JLabel("Ready");
+
+    // cache nav buttons so we can highlight active one
     private final Map<String, JButton> navButtons = new LinkedHashMap<>();
 
+    // widgets
     private final JComboBox<String> homeCategory = new JComboBox<>(new String[]{"Person", "Team", "Tournament"});
     private final JLabel playerCount = metricLabel();
     private final JLabel teamCount = metricLabel();
@@ -65,9 +83,10 @@ public final class MainFrame extends JFrame {
 
         setTitle("Counter-Strike Database Browser");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(980, 640));
-        setSize(1180, 760);
+        setMinimumSize(new Dimension(1000, 660));
+        setSize(1200, 780);
         setLocationRelativeTo(null);
+        getContentPane().setBackground(BG_DARKER);
         setLayout(new BorderLayout());
 
         add(header(databaseUrl), BorderLayout.NORTH);
@@ -77,11 +96,14 @@ public final class MainFrame extends JFrame {
         showPage(HOME);
     }
 
+    // ── Header: nav + database info + search ──
     private JPanel header(String databaseUrl) {
         JPanel header = new JPanel(new BorderLayout());
-        header.setBorder(new EmptyBorder(12, 16, 8, 16));
+        header.setBorder(new EmptyBorder(14, 20, 10, 20));
+        header.setBackground(BG_DARKER);
 
-        JPanel nav = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        // Navigation row
+        JPanel nav = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         nav.setOpaque(false);
         addNavButton(nav, HOME);
         addNavButton(nav, PLAYERS);
@@ -91,12 +113,19 @@ public final class MainFrame extends JFrame {
 
         JLabel dbLabel = new JLabel("Oracle: " + databaseUrl);
         dbLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        dbLabel.setForeground(new Color(72, 78, 86));
+        dbLabel.setForeground(TEXT_MUTED);
+        dbLabel.setFont(dbLabel.getFont().deriveFont(11f));
 
+        // Search bar
         JPanel search = new JPanel(new BorderLayout(8, 0));
-        search.setBorder(new EmptyBorder(12, 0, 0, 0));
+        search.setBorder(new EmptyBorder(14, 0, 0, 0));
+        search.setOpaque(false);
         JLabel searchLabel = new JLabel("Search");
+        searchLabel.setForeground(TEXT_MUTED);
         JButton refresh = new JButton("Refresh");
+        refresh.setBackground(ACCENT_DIM);
+        refresh.setForeground(TEXT_PRIMARY);
+        refresh.setFocusPainted(false);
         search.add(searchLabel, BorderLayout.WEST);
         search.add(searchField, BorderLayout.CENTER);
         search.add(refresh, BorderLayout.EAST);
@@ -113,29 +142,36 @@ public final class MainFrame extends JFrame {
     private void addNavButton(JPanel nav, String page) {
         JButton button = new JButton(page);
         button.setFocusPainted(false);
-        button.setPreferredSize(new Dimension(page.equals(TOURNAMENTS) ? 140 : 108, 34));
+        button.setPreferredSize(new Dimension(page.equals(TOURNAMENTS) ? 140 : 108, 36));
         button.addActionListener(event -> showPage(page));
         navButtons.put(page, button);
         nav.add(button);
     }
 
+    // ── Content: card layout for each page ──
     private JPanel content() {
         cards.add(homePanel(), HOME);
         cards.add(tablePanel("Players", playersTable), PLAYERS);
         cards.add(teamsPanel(), TEAMS);
         cards.add(tablePanel("Matches", matchesTable), MATCHES);
         cards.add(tablePanel("Tournaments", tournamentsTable), TOURNAMENTS);
+        cards.setBackground(BG_DARKER);
         return cards;
     }
 
+    // ── Home page ──
     private JPanel homePanel() {
         JPanel panel = new JPanel(new BorderLayout(16, 16));
         panel.setBorder(new EmptyBorder(16, 24, 16, 24));
+        panel.setBackground(BG_DARKER);
+        panel.setOpaque(true);
 
         JLabel title = pageTitle("Home");
+        title.setForeground(TEXT_PRIMARY);
         panel.add(title, BorderLayout.NORTH);
 
         JPanel center = new JPanel(new GridLayout(1, 2, 16, 0));
+        center.setOpaque(false);
         center.add(homeControlsAndResults());
         center.add(homeTrending());
         panel.add(center, BorderLayout.CENTER);
@@ -144,23 +180,31 @@ public final class MainFrame extends JFrame {
 
     private JPanel homeControlsAndResults() {
         JPanel panel = new JPanel(new BorderLayout(12, 12));
-        panel.setBorder(BorderFactory.createLineBorder(new Color(216, 222, 228)));
+        panel.setBackground(BG_CARD);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(BORDER_SUBTLE, 1),
+                BorderFactory.createEmptyBorder(0, 0, 0, 0)));
 
         JPanel top = new JPanel(new BorderLayout(8, 0));
-        top.setBorder(new EmptyBorder(12, 12, 0, 12));
-        top.add(new JLabel("Category"), BorderLayout.WEST);
+        top.setOpaque(false);
+        top.setBorder(new EmptyBorder(14, 16, 0, 16));
+        JLabel catLabel = new JLabel("Category");
+        catLabel.setForeground(TEXT_MUTED);
+        top.add(catLabel, BorderLayout.WEST);
         top.add(homeCategory, BorderLayout.CENTER);
 
         homeCategory.addActionListener(event -> reloadCurrentPage());
 
         JPanel metrics = new JPanel(new GridLayout(2, 2, 10, 10));
-        metrics.setBorder(new EmptyBorder(12, 12, 12, 12));
-        metrics.add(metricPanel("Players", playerCount));
-        metrics.add(metricPanel("Teams", teamCount));
-        metrics.add(metricPanel("Matches", matchCount));
-        metrics.add(metricPanel("Tournaments", tournamentCount));
+        metrics.setBorder(new EmptyBorder(14, 16, 14, 16));
+        metrics.setOpaque(false);
+        metrics.add(metricCard("Players", playerCount));
+        metrics.add(metricCard("Teams", teamCount));
+        metrics.add(metricCard("Matches", matchCount));
+        metrics.add(metricCard("Tournaments", tournamentCount));
 
         JPanel north = new JPanel(new BorderLayout());
+        north.setOpaque(false);
         north.add(top, BorderLayout.NORTH);
         north.add(metrics, BorderLayout.CENTER);
 
@@ -169,61 +213,80 @@ public final class MainFrame extends JFrame {
         return panel;
     }
 
-    private JPanel homeTrending() {
-        JPanel panel = new JPanel(new GridLayout(2, 1, 0, 16));
-        panel.add(trendingCard("Trending Player", topPlayerName, topPlayerDetail));
-        panel.add(trendingCard("Trending Team", trendingTeamName, trendingTeamDetail));
-        return panel;
-    }
-
-    private JPanel metricPanel(String label, JLabel value) {
+    private JPanel metricCard(String label, JLabel value) {
         JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(METRIC_BG);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(230, 234, 238)),
-                new EmptyBorder(10, 12, 10, 12)
-        ));
+                BorderFactory.createLineBorder(BORDER_SUBTLE, 1),
+                new EmptyBorder(12, 16, 12, 16)));
         JLabel name = new JLabel(label);
-        name.setForeground(new Color(86, 94, 104));
+        name.setForeground(TEXT_MUTED);
+        name.setFont(name.getFont().deriveFont(11f));
         panel.add(name, BorderLayout.NORTH);
         panel.add(value, BorderLayout.CENTER);
         return panel;
     }
 
+    private JPanel homeTrending() {
+        JPanel panel = new JPanel(new GridLayout(2, 1, 0, 16));
+        panel.setOpaque(false);
+        panel.add(trendingCard("Trending Player", topPlayerName, topPlayerDetail));
+        panel.add(trendingCard("Trending Team", trendingTeamName, trendingTeamDetail));
+        return panel;
+    }
+
     private JPanel trendingCard(String label, JLabel name, JLabel detail) {
-        JPanel panel = new JPanel(new BorderLayout(0, 12));
+        JPanel panel = new JPanel(new BorderLayout(0, 14));
+        panel.setBackground(BG_CARD);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(216, 222, 228)),
-                new EmptyBorder(28, 28, 28, 28)
-        ));
+                BorderFactory.createLineBorder(BORDER_SUBTLE, 1),
+                new EmptyBorder(28, 28, 28, 28)));
+
         JLabel heading = new JLabel(label);
-        heading.setForeground(new Color(86, 94, 104));
+        heading.setForeground(TEXT_MUTED);
+        heading.setFont(heading.getFont().deriveFont(Font.BOLD, 12f));
         panel.add(heading, BorderLayout.NORTH);
 
-        JPanel text = new JPanel(new GridLayout(2, 1, 0, 6));
+        JPanel text = new JPanel(new GridLayout(2, 1, 0, 8));
+        text.setOpaque(false);
         text.add(name);
         text.add(detail);
         panel.add(text, BorderLayout.CENTER);
         return panel;
     }
 
+    // ── Generic table page (Players, Matches, Tournaments) ──
     private JPanel tablePanel(String title, JTable table) {
         JPanel panel = new JPanel(new BorderLayout(12, 12));
         panel.setBorder(new EmptyBorder(16, 24, 16, 24));
-        panel.add(pageTitle(title), BorderLayout.NORTH);
+        panel.setBackground(BG_DARKER);
+
+        JLabel t = pageTitle(title);
+        t.setForeground(TEXT_PRIMARY);
+        panel.add(t, BorderLayout.NORTH);
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
         return panel;
     }
 
+    // ── Teams page (has Add/Update buttons) ──
     private JPanel teamsPanel() {
         JPanel panel = new JPanel(new BorderLayout(12, 12));
         panel.setBorder(new EmptyBorder(16, 24, 16, 24));
+        panel.setBackground(BG_DARKER);
 
         JPanel top = new JPanel(new BorderLayout());
-        top.add(pageTitle("Teams"), BorderLayout.WEST);
+        top.setOpaque(false);
+
+        JLabel t = pageTitle("Teams");
+        t.setForeground(TEXT_PRIMARY);
+        top.add(t, BorderLayout.WEST);
 
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        actions.setOpaque(false);
         JButton addButton = new JButton("Add Team");
         JButton updateButton = new JButton("Update Selected");
+        styleActionButton(addButton);
+        styleActionButton(updateButton);
         addButton.addActionListener(event -> showTeamDialog(false, "", ""));
         updateButton.addActionListener(event -> updateSelectedTeam());
         actions.add(addButton);
@@ -235,9 +298,17 @@ public final class MainFrame extends JFrame {
         return panel;
     }
 
+    private void styleActionButton(JButton btn) {
+        btn.setBackground(ACCENT_DIM);
+        btn.setForeground(TEXT_PRIMARY);
+        btn.setFocusPainted(false);
+    }
+
+    // ── Reusable widgets ──
     private JLabel pageTitle(String title) {
         JLabel label = new JLabel(title);
         label.setFont(label.getFont().deriveFont(Font.BOLD, 26f));
+        label.setForeground(TEXT_PRIMARY);
         return label;
     }
 
@@ -245,28 +316,67 @@ public final class MainFrame extends JFrame {
         JTable table = new JTable(new ReadOnlyTableModel());
         table.setAutoCreateRowSorter(true);
         table.setFillsViewportHeight(true);
-        table.setRowHeight(28);
-        table.setShowGrid(true);
-        table.setGridColor(new Color(230, 234, 238));
+        table.setRowHeight(32);
+        table.setShowGrid(false);
+        table.setIntercellSpacing(new Dimension(0, 0));
+        table.setBackground(BG_CARD);
+        table.setForeground(TEXT_PRIMARY);
+        table.setSelectionBackground(ACCENT_DIM);
+        table.setSelectionForeground(TEXT_PRIMARY);
+
+        // Alternating row colors
+        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable tbl, Object value,
+                    boolean isSelected, boolean hasFocus, int row, int col) {
+                Component c = super.getTableCellRendererComponent(tbl, value, isSelected, hasFocus, row, col);
+                if (!isSelected) {
+                    c.setBackground(row % 2 == 0 ? BG_CARD : TABLE_ALT);
+                }
+                setBorder(new EmptyBorder(4, 12, 4, 12));
+                return c;
+            }
+        });
 
         JTableHeader header = table.getTableHeader();
         header.setReorderingAllowed(false);
-        header.setFont(header.getFont().deriveFont(Font.BOLD));
+        header.setBackground(TABLE_HEADER_BG);
+        header.setForeground(TEXT_MUTED);
+        header.setFont(header.getFont().deriveFont(Font.BOLD, 12f));
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, ACCENT_DIM));
+
         return table;
     }
 
+    // ── Footer / status bar ──
     private JPanel footer() {
         JPanel footer = new JPanel(new BorderLayout());
-        footer.setBorder(new EmptyBorder(8, 16, 10, 16));
-        statusLabel.setForeground(new Color(72, 78, 86));
+        footer.setBorder(new EmptyBorder(8, 20, 10, 20));
+        footer.setBackground(BG_DARKER);
+        statusLabel.setForeground(TEXT_MUTED);
+        statusLabel.setFont(statusLabel.getFont().deriveFont(11f));
         footer.add(statusLabel, BorderLayout.WEST);
         return footer;
     }
 
+    // ── Navigation logic ──
     private void showPage(String page) {
         currentPage = page;
         cardLayout.show(cards, page);
-        navButtons.forEach((name, button) -> button.setEnabled(!name.equals(page)));
+
+        // Highlight active button, dim others — CS2 tab style
+        navButtons.forEach((name, button) -> {
+            if (name.equals(page)) {
+                button.setBackground(ACCENT);
+                button.setForeground(Color.BLACK);
+                button.setEnabled(true);
+            } else {
+                button.setBackground(null);          // FlatLaf default
+                button.setForeground(null);
+                button.setEnabled(true);
+            }
+        });
+
         reloadCurrentPage();
     }
 
@@ -281,6 +391,7 @@ public final class MainFrame extends JFrame {
         }
     }
 
+    // ── Data loading ──
     private void loadHome() {
         String category = String.valueOf(homeCategory.getSelectedItem());
         String search = searchField.getText();
@@ -337,13 +448,13 @@ public final class MainFrame extends JFrame {
         worker.execute();
     }
 
+    // ── Team CRUD ──
     private void updateSelectedTeam() {
         int selectedRow = teamsTable.getSelectedRow();
         if (selectedRow < 0) {
             JOptionPane.showMessageDialog(this, "Select a team row first.", "No Team Selected", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
         int modelRow = teamsTable.convertRowIndexToModel(selectedRow);
         String teamName = valueAsText(teamsTable.getModel().getValueAt(modelRow, 0));
         String region = valueAsText(teamsTable.getModel().getValueAt(modelRow, 1));
@@ -362,15 +473,10 @@ public final class MainFrame extends JFrame {
         form.add(regionField);
 
         int result = JOptionPane.showConfirmDialog(
-                this,
-                form,
+                this, form,
                 update ? "Update Team Region" : "Add Team",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE
-        );
-        if (result != JOptionPane.OK_OPTION) {
-            return;
-        }
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        if (result != JOptionPane.OK_OPTION) return;
 
         String teamName = teamNameField.getText().trim();
         String region = regionField.getText().trim();
@@ -380,21 +486,16 @@ public final class MainFrame extends JFrame {
             showTeamDialog(update, teamName, region);
             return;
         }
-
         saveTeam(update, teamName, region);
     }
 
     private void saveTeam(boolean update, String teamName, String region) {
         setStatus(update ? "Updating team..." : "Adding team...");
-
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
-                if (update) {
-                    repository.updateTeamRegion(teamName, region);
-                } else {
-                    repository.addTeam(teamName, region);
-                }
+                if (update) repository.updateTeamRegion(teamName, region);
+                else repository.addTeam(teamName, region);
                 return null;
             }
 
@@ -403,12 +504,9 @@ public final class MainFrame extends JFrame {
                 try {
                     get();
                     setStatus(update ? "Updated team: " + teamName : "Added team: " + teamName);
-                    JOptionPane.showMessageDialog(
-                            MainFrame.this,
+                    JOptionPane.showMessageDialog(MainFrame.this,
                             update ? "Team region updated." : "Team added.",
-                            "Team Saved",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
+                            "Team Saved", JOptionPane.INFORMATION_MESSAGE);
                     reloadCurrentPage();
                 } catch (Exception exception) {
                     showQueryError(exception);
@@ -419,21 +517,14 @@ public final class MainFrame extends JFrame {
     }
 
     private String validateTeamInput(String teamName, String region) {
-        if (teamName.isBlank()) {
-            return "Team name is required.";
-        }
-        if (teamName.length() > 100) {
-            return "Team name must be 100 characters or fewer.";
-        }
-        if (region.isBlank()) {
-            return "Region is required.";
-        }
-        if (region.length() > 50) {
-            return "Region must be 50 characters or fewer.";
-        }
+        if (teamName.isBlank()) return "Team name is required.";
+        if (teamName.length() > 100) return "Team name must be 100 characters or fewer.";
+        if (region.isBlank()) return "Region is required.";
+        if (region.length() > 50) return "Region must be 50 characters or fewer.";
         return null;
     }
 
+    // ── Helpers ──
     private void updateSummary(HomeSummary summary) {
         playerCount.setText(String.valueOf(summary.playerCount()));
         teamCount.setText(String.valueOf(summary.teamCount()));
@@ -456,9 +547,7 @@ public final class MainFrame extends JFrame {
 
     private void showQueryError(Exception exception) {
         Throwable cause = exception.getCause() == null ? exception : exception.getCause();
-        if (cause instanceof SQLException sqlException) {
-            cause = sqlException;
-        }
+        if (cause instanceof SQLException sqlException) cause = sqlException;
         setStatus("Error: " + cause.getMessage());
         JOptionPane.showMessageDialog(this, cause.getMessage(), "Database Query Error", JOptionPane.ERROR_MESSAGE);
     }
@@ -469,27 +558,30 @@ public final class MainFrame extends JFrame {
 
     private static JLabel metricLabel() {
         JLabel label = new JLabel("0");
-        label.setFont(label.getFont().deriveFont(Font.BOLD, 24f));
+        label.setFont(label.getFont().deriveFont(Font.BOLD, 28f));
+        label.setForeground(ACCENT);
         return label;
     }
 
     private static JLabel cardTitleLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(label.getFont().deriveFont(Font.BOLD, 28f));
+        label.setFont(label.getFont().deriveFont(Font.BOLD, 26f));
+        label.setForeground(TEXT_PRIMARY);
         return label;
     }
 
     private static JLabel cardDetailLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setForeground(new Color(72, 78, 86));
+        label.setFont(label.getFont().deriveFont(13f));
+        label.setForeground(TEXT_MUTED);
         return label;
     }
 
+    // ── Inner types ──
     @FunctionalInterface
     private interface TableLoader {
         TableData load(String search) throws Exception;
     }
 
-    private record HomeLoadResult(HomeSummary summary, TableData tableData) {
-    }
+    private record HomeLoadResult(HomeSummary summary, TableData tableData) {}
 }
