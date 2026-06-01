@@ -33,23 +33,25 @@ import java.util.Map;
 
 public final class MainFrame extends JFrame {
 
-    // ── CS2-inspired dark palette ──
-    private static final Color ACCENT       = new Color(0xDE9B35);  // gold/amber
-    private static final Color ACCENT_DIM   = new Color(0x8B6914);
-    private static final Color BG_DARKER    = new Color(0x1A1A24);
-    private static final Color BG_CARD      = new Color(0x242436);
-    private static final Color TEXT_PRIMARY = new Color(0xE8E8E8);
-    private static final Color TEXT_MUTED   = new Color(0x8E8E9A);
-    private static final Color BORDER_SUBTLE = new Color(0x363650);
-    private static final Color TABLE_ALT    = new Color(0x1E1E2E);
-    private static final Color TABLE_HEADER_BG = new Color(0x2A2A40);
-    private static final Color METRIC_BG    = new Color(0x2A2A42);
+    // ── CS2-inspired dark palette (package-visible so sibling panels can reuse it) ──
+    static final Color ACCENT       = new Color(0xDE9B35);  // gold/amber
+    static final Color ACCENT_DIM   = new Color(0x8B6914);
+    static final Color BG_DARKER    = new Color(0x1A1A24);
+    static final Color BG_CARD      = new Color(0x242436);
+    static final Color TEXT_PRIMARY = new Color(0xE8E8E8);
+    static final Color TEXT_MUTED   = new Color(0x8E8E9A);
+    static final Color BORDER_SUBTLE = new Color(0x363650);
+    static final Color TABLE_ALT    = new Color(0x1E1E2E);
+    static final Color TABLE_HEADER_BG = new Color(0x2A2A40);
+    static final Color METRIC_BG    = new Color(0x2A2A42);
 
     private static final String HOME = "Home";
     private static final String PLAYERS = "Players";
     private static final String TEAMS = "Teams";
     private static final String MATCHES = "Matches";
     private static final String TOURNAMENTS = "Tournaments";
+    private static final String MANAGE = "Manage";
+    private static final String ANALYTICS = "Analytics";
 
     private final CounterStrikeRepository repository;
     private final CardLayout cardLayout = new CardLayout();
@@ -110,6 +112,8 @@ public final class MainFrame extends JFrame {
         addNavButton(nav, TEAMS);
         addNavButton(nav, MATCHES);
         addNavButton(nav, TOURNAMENTS);
+        addNavButton(nav, MANAGE);
+        addNavButton(nav, ANALYTICS);
 
         JLabel dbLabel = new JLabel("Oracle: " + databaseUrl);
         dbLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -155,6 +159,8 @@ public final class MainFrame extends JFrame {
         cards.add(teamsPanel(), TEAMS);
         cards.add(tablePanel("Matches", matchesTable), MATCHES);
         cards.add(tablePanel("Tournaments", tournamentsTable), TOURNAMENTS);
+        cards.add(new CrudPanel(repository), MANAGE);
+        cards.add(new AnalyticsPanel(repository), ANALYTICS);
         cards.setBackground(BG_DARKER);
         return cards;
     }
@@ -387,6 +393,7 @@ public final class MainFrame extends JFrame {
             case TEAMS -> loadTable(teamsTable, "Teams", repository::findTrendingTeams);
             case MATCHES -> loadTable(matchesTable, "Matches", repository::findTeamMatchHistory);
             case TOURNAMENTS -> loadTable(tournamentsTable, "Tournaments", repository::findTournamentMatchSummary);
+            case MANAGE, ANALYTICS -> setStatus(currentPage + " | use the controls on this page");
             default -> throw new IllegalStateException("Unknown page: " + currentPage);
         }
     }
