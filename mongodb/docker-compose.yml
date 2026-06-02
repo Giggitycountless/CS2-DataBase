@@ -1,0 +1,17 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: cs_mongo_small
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongodb_data:/data/db
+      - ./scripts/init.js:/docker-entrypoint-initdb.d/init.js:ro
+      - ./scripts/demo_queries.js:/demo_queries.js:ro
+
+volumes:
+  mongodb_data:
