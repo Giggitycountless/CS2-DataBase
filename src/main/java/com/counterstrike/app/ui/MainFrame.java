@@ -1,6 +1,6 @@
 package com.counterstrike.app.ui;
 
-import com.counterstrike.app.repository.CounterStrikeRepository;
+import com.counterstrike.app.repository.AppRepository;
 import com.counterstrike.app.repository.HomeSummary;
 import com.counterstrike.app.repository.TableData;
 
@@ -53,7 +53,7 @@ public final class MainFrame extends JFrame {
     private static final String MANAGE = "Manage";
     private static final String ANALYTICS = "Analytics";
 
-    private final CounterStrikeRepository repository;
+    private final AppRepository repository;
     private final CardLayout cardLayout = new CardLayout();
     private final JPanel cards = new JPanel(cardLayout);
     private final JTextField searchField = new JTextField();
@@ -80,7 +80,7 @@ public final class MainFrame extends JFrame {
 
     private String currentPage = HOME;
 
-    public MainFrame(CounterStrikeRepository repository, String databaseUrl) {
+    public MainFrame(AppRepository repository, String databaseUrl) {
         this.repository = repository;
 
         setTitle("Counter-Strike Database Browser");
@@ -115,7 +115,7 @@ public final class MainFrame extends JFrame {
         addNavButton(nav, MANAGE);
         addNavButton(nav, ANALYTICS);
 
-        JLabel dbLabel = new JLabel("Oracle: " + databaseUrl);
+        JLabel dbLabel = new JLabel(repository.dbLabel() + ": " + databaseUrl);
         dbLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         dbLabel.setForeground(TEXT_MUTED);
         dbLabel.setFont(dbLabel.getFont().deriveFont(11f));

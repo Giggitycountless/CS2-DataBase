@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
-public final class CounterStrikeRepository {
+public final class CounterStrikeRepository implements AppRepository {
     private final Database database;
 
     public CounterStrikeRepository(Database database) {
@@ -558,6 +558,16 @@ public final class CounterStrikeRepository {
             throw new IllegalArgumentException(fieldName + " must be " + maxLength + " characters or fewer.");
         }
         return normalized;
+    }
+
+    @Override
+    public boolean supportsAnalytics() {
+        return true;
+    }
+
+    @Override
+    public String dbLabel() {
+        return "Oracle";
     }
 
     @FunctionalInterface

@@ -2,7 +2,7 @@ package com.counterstrike.app.ui;
 
 import com.counterstrike.app.repository.AnalyticsCatalog;
 import com.counterstrike.app.repository.AnalyticsQuery;
-import com.counterstrike.app.repository.CounterStrikeRepository;
+import com.counterstrike.app.repository.AppRepository;
 import com.counterstrike.app.repository.TableData;
 
 import javax.swing.BorderFactory;
@@ -24,7 +24,7 @@ import java.awt.Font;
 /** Runs curated, read-only analytical queries (joins, aggregation, sub-queries). */
 final class AnalyticsPanel extends JPanel {
 
-    private final CounterStrikeRepository repository;
+    private final AppRepository repository;
     private final JComboBox<AnalyticsQuery> querySelect = new JComboBox<>();
     private final JTextField paramField = new JTextField(18);
     private final JLabel paramLabel = new JLabel();
@@ -32,14 +32,25 @@ final class AnalyticsPanel extends JPanel {
     private final JTable table = Styles.styledTable();
     private final JLabel statusLabel = new JLabel("Pick a query and press Run");
 
-    AnalyticsPanel(CounterStrikeRepository repository) {
+    AnalyticsPanel(AppRepository repository) {
         this.repository = repository;
         setLayout(new BorderLayout(12, 12));
         setBorder(new EmptyBorder(16, 24, 16, 24));
         setBackground(MainFrame.BG_DARKER);
 
         add(buildHeader(), BorderLayout.NORTH);
-        add(new JScrollPane(table), BorderLayout.CENTER);
+
+        if (!repository.supportsAnalytics()) {
+            javax.swing.JLabel notice = new javax.swing.JLabel(
+                    "<html><center>Advanced SQL queries require an Oracle connection.<br>"
+                    + "Switch to Oracle at startup to use this feature.</center></html>");
+            notice.setForeground(MainFrame.TEXT_MUTED);
+            notice.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+            notice.setFont(notice.getFont().deriveFont(14f));
+            add(notice, BorderLayout.CENTER);
+        } else {
+            add(new JScrollPane(table), BorderLayout.CENTER);
+        }
 
         JPanel footer = new JPanel(new BorderLayout());
         footer.setOpaque(false);
@@ -125,9 +136,15 @@ final class AnalyticsPanel extends JPanel {
                     statusLabel.setText(query.title() + " | rows: " + data.rowCount());
                 } catch (Exception ex) {
                     Throwable cause = ex.getCause() == null ? ex : ex.getCause();
-                    statusLabel.setText("Error: " + cause.getMessage());
-                    JOptionPane.showMessageDialog(AnalyticsPanel.this, cause.getMessage(),
-                            "Query Failed", JOptionPane.ERROR_MESSAGE);
+                    if (cause instanceof UnsupportedOperationException) {
+                        statusLabel.setText("Not available in MongoDB mode.");
+                        JOptionPane.showMessageDialog(AnalyticsPanel.this, cause.getMessage(),
+                                "Not Available", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        statusLabel.setText("Error: " + cause.getMessage());
+                        JOptionPane.showMessageDialog(AnalyticsPanel.this, cause.getMessage(),
+                                "Query Failed", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         }.execute();

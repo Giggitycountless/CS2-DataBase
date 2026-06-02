@@ -1,7 +1,7 @@
 package com.counterstrike.app.ui;
 
+import com.counterstrike.app.repository.AppRepository;
 import com.counterstrike.app.repository.ColumnSpec;
-import com.counterstrike.app.repository.CounterStrikeRepository;
 import com.counterstrike.app.repository.Schema;
 import com.counterstrike.app.repository.TableData;
 import com.counterstrike.app.repository.TableSpec;
@@ -34,7 +34,7 @@ import java.util.Map;
  */
 final class CrudPanel extends JPanel {
 
-    private final CounterStrikeRepository repository;
+    private final AppRepository repository;
     private final JComboBox<TableSpec> tableSelect = new JComboBox<>();
     private final JTextField searchField = new JTextField();
     private final JTable table = Styles.styledTable();
@@ -42,7 +42,7 @@ final class CrudPanel extends JPanel {
 
     private TableSpec currentSpec;
 
-    CrudPanel(CounterStrikeRepository repository) {
+    CrudPanel(AppRepository repository) {
         this.repository = repository;
         setLayout(new BorderLayout(12, 12));
         setBorder(new EmptyBorder(16, 24, 16, 24));
