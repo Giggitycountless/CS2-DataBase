@@ -55,9 +55,9 @@ public final class CounterStrikeApp {
                         "MongoDB Connection",
                         JOptionPane.PLAIN_MESSAGE,
                         null, null,
-                        "mongodb://localhost:27017");
+                        "mongodb://root:example@localhost:27017");
                 if (uri == null || uri.isBlank()) return;
-                MongoDatabase mongo = new MongoDatabase(uri.trim(), "cs2");
+                MongoDatabase mongo = new MongoDatabase(uri.trim(), "cs_small");
                 mongo.testConnection();
                 repository = new MongoCounterStrikeRepository(mongo);
                 dbInfo = uri.trim() + "/cs2";
