@@ -449,17 +449,14 @@ public final class CounterStrikeRepository implements AppRepository {
         return new TableData(columns, rows);
     }
 
-    /**
-     * Reads a single cell, forcing DATE/TIMESTAMP columns to {@code java.sql.Timestamp}
-     * so they are never returned as Oracle-specific types whose toString() may use
-     * the container's NLS locale (e.g. Chinese month names).
-     */
     private static Object safeGet(ResultSet rs, ResultSetMetaData meta, int col)
             throws SQLException {
         int type = meta.getColumnType(col);
         if (type == java.sql.Types.DATE || type == java.sql.Types.TIMESTAMP
                 || type == java.sql.Types.TIMESTAMP_WITH_TIMEZONE) {
-            return rs.getTimestamp(col); // always java.sql.Timestamp, a java.util.Date
+            java.sql.Timestamp ts = rs.getTimestamp(col);
+            if (ts == null) return null;
+            return ts.toLocalDateTime().toLocalDate().toString(); // fixed YYYY-MM-DD, locale-independent
         }
         return rs.getObject(col);
     }
