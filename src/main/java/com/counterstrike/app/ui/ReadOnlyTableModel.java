@@ -38,4 +38,14 @@ public final class ReadOnlyTableModel extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return false;
     }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        for (Object[] row : rows) {
+            if (row[columnIndex] != null) {
+                return row[columnIndex].getClass();
+            }
+        }
+        return Object.class;
+    }
 }
