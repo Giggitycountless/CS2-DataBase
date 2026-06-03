@@ -339,19 +339,25 @@ public final class MainFrame extends JFrame {
         table.setSelectionBackground(ACCENT_DIM);
         table.setSelectionForeground(TEXT_PRIMARY);
 
-        // Alternating row colors
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+        // Alternating row colors; format dates and force left-align for all types
+        DefaultTableCellRenderer mainRenderer = new DefaultTableCellRenderer() {
+            private final java.text.SimpleDateFormat fmt =
+                    new java.text.SimpleDateFormat("yyyy-MM-dd");
             @Override
             public Component getTableCellRendererComponent(JTable tbl, Object value,
                     boolean isSelected, boolean hasFocus, int row, int col) {
-                Component c = super.getTableCellRendererComponent(tbl, value, isSelected, hasFocus, row, col);
+                Object display = (value instanceof java.util.Date d) ? fmt.format(d) : value;
+                Component c = super.getTableCellRendererComponent(tbl, display, isSelected, hasFocus, row, col);
                 if (!isSelected) {
                     c.setBackground(row % 2 == 0 ? BG_CARD : TABLE_ALT);
                 }
+                setHorizontalAlignment(LEFT);
                 setBorder(new EmptyBorder(4, 12, 4, 12));
                 return c;
             }
-        });
+        };
+        table.setDefaultRenderer(Object.class, mainRenderer);
+        table.setDefaultRenderer(Number.class, mainRenderer);
 
         JTableHeader header = table.getTableHeader();
         header.setReorderingAllowed(false);

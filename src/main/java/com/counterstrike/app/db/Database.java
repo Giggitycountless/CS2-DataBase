@@ -5,6 +5,7 @@ import com.counterstrike.app.config.DatabaseConfig;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public final class Database {
     private final DatabaseConfig config;
@@ -15,7 +16,14 @@ public final class Database {
 
     public Connection getConnection() throws SQLException {
         loadOracleDriverIfPresent();
-        return DriverManager.getConnection(config.url(), config.user(), config.password());
+        Connection conn = DriverManager.getConnection(config.url(), config.user(), config.password());
+        // Force English date format regardless of Oracle container NLS settings
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("ALTER SESSION SET NLS_DATE_FORMAT='YYYY-MM-DD' "
+                       + "NLS_TIMESTAMP_FORMAT='YYYY-MM-DD' "
+                       + "NLS_DATE_LANGUAGE='AMERICAN'");
+        }
+        return conn;
     }
 
     public void testConnection() throws SQLException {

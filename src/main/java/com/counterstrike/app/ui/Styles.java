@@ -29,7 +29,7 @@ final class Styles {
         table.setSelectionBackground(MainFrame.ACCENT_DIM);
         table.setSelectionForeground(MainFrame.TEXT_PRIMARY);
 
-        table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+        DefaultTableCellRenderer styledRenderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable tbl, Object value,
                     boolean isSelected, boolean hasFocus, int row, int col) {
@@ -38,10 +38,13 @@ final class Styles {
                 if (!isSelected) {
                     c.setBackground(row % 2 == 0 ? MainFrame.BG_CARD : MainFrame.TABLE_ALT);
                 }
+                setHorizontalAlignment(LEFT);
                 setBorder(new EmptyBorder(4, 12, 4, 12));
                 return c;
             }
-        });
+        };
+        table.setDefaultRenderer(Object.class, styledRenderer);
+        table.setDefaultRenderer(Number.class, styledRenderer);
 
         JTableHeader header = table.getTableHeader();
         header.setReorderingAllowed(false);
