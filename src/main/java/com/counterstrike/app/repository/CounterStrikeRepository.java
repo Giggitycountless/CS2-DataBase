@@ -366,7 +366,7 @@ public final class CounterStrikeRepository implements AppRepository {
         while (resultSet.next()) {
             Object[] row = new Object[columnCount];
             for (int index = 0; index < columnCount; index++) {
-                row[index] = resultSet.getObject(index + 1);
+                row[index] = safeGet(resultSet, metaData, index + 1);
             }
             rows.add(row);
         }
@@ -436,16 +436,32 @@ public final class CounterStrikeRepository implements AppRepository {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             binder.bind(statement);
             try (ResultSet resultSet = statement.executeQuery()) {
+                ResultSetMetaData metaData = resultSet.getMetaData();
                 while (resultSet.next()) {
                     Object[] row = new Object[columns.length];
                     for (int index = 0; index < columns.length; index++) {
-                        row[index] = resultSet.getObject(index + 1);
+                        row[index] = safeGet(resultSet, metaData, index + 1);
                     }
                     rows.add(row);
                 }
             }
         }
         return new TableData(columns, rows);
+    }
+
+    /**
+     * Reads a single cell, forcing DATE/TIMESTAMP columns to {@code java.sql.Timestamp}
+     * so they are never returned as Oracle-specific types whose toString() may use
+     * the container's NLS locale (e.g. Chinese month names).
+     */
+    private static Object safeGet(ResultSet rs, ResultSetMetaData meta, int col)
+            throws SQLException {
+        int type = meta.getColumnType(col);
+        if (type == java.sql.Types.DATE || type == java.sql.Types.TIMESTAMP
+                || type == java.sql.Types.TIMESTAMP_WITH_TIMEZONE) {
+            return rs.getTimestamp(col); // always java.sql.Timestamp, a java.util.Date
+        }
+        return rs.getObject(col);
     }
 
     private int executeUpdate(String sql, StatementBinder binder) throws SQLException {
