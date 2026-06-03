@@ -37,11 +37,11 @@ final class CrudPanel extends JPanel {
 
     // ── Column filter widgets ──
     private final JComboBox<String> filterCol = new JComboBox<>();
-    private final JComboBox<String> filterOp  = new JComboBox<>(
-            new String[]{">", "<", ">=", "<=", "=", "≠", "contains"});
+    private final JComboBox<String> filterOp  = new JComboBox<>();
     private final JTextField filterVal = new JTextField(12);
 
     private TableSpec currentSpec;
+    private List<ColumnSpec> currentColumns = List.of();
 
     CrudPanel(AppRepository repository) {
         this.repository = repository;
@@ -137,12 +137,14 @@ final class CrudPanel extends JPanel {
         filterOp.setPreferredSize(new Dimension(85,  28));
         filterVal.setPreferredSize(new Dimension(130, 28));
 
+        filterCol.addActionListener(e -> updateFilterOperators());
+
         JButton applyBtn = Styles.accentButton("Apply");
         JButton clearBtn = Styles.accentButton("Clear");
         applyBtn.addActionListener(e -> applyFilter());
         clearBtn.addActionListener(e -> clearFilter());
 
-        JLabel hint = new JLabel("e.g.  Rating > 1.2   ADR >= 80   Nationality = Russia");
+        JLabel hint = new JLabel("Number/Date: > < >= <= = ≠    Text: = ≠ contains");
         hint.setForeground(MainFrame.TEXT_MUTED);
         hint.setFont(hint.getFont().deriveFont(11f));
 
@@ -201,10 +203,31 @@ final class CrudPanel extends JPanel {
 
     /** Rebuild the column-selector dropdown from the loaded table's columns. */
     private void refreshFilterColumns(TableSpec spec) {
+        currentColumns = spec.columns();
         filterCol.removeAllItems();
-        for (ColumnSpec col : spec.columns()) {
+        for (ColumnSpec col : currentColumns) {
             filterCol.addItem(col.label());
         }
+        updateFilterOperators();
+    }
+
+    /** Swap the operator list to match the selected column's type. */
+    private void updateFilterOperators() {
+        int idx = filterCol.getSelectedIndex();
+        ColumnSpec.Type type = (idx >= 0 && idx < currentColumns.size())
+                ? currentColumns.get(idx).type() : ColumnSpec.Type.TEXT;
+
+        String[] ops = switch (type) {
+            case TEXT    -> new String[]{"contains", "=", "≠"};
+            case DATE    -> new String[]{"=", "≠", ">=", "<=", ">", "<"};
+            default      -> new String[]{">", "<", ">=", "<=", "=", "≠"}; // INTEGER, DECIMAL
+        };
+
+        String prev = (String) filterOp.getSelectedItem();
+        filterOp.removeAllItems();
+        for (String op : ops) filterOp.addItem(op);
+        filterOp.setSelectedItem(prev);
+        if (filterOp.getSelectedIndex() < 0) filterOp.setSelectedIndex(0);
     }
 
     // ── Column filter ────────────────────────────────────────────────────────
@@ -220,6 +243,25 @@ final class CrudPanel extends JPanel {
         var sorter = (TableRowSorter<ReadOnlyTableModel>) table.getRowSorter();
         if (sorter == null) return;
 
+        // Capture column type at filter-build time (effectively final)
+        ColumnSpec.Type colType = (colIdx < currentColumns.size())
+                ? currentColumns.get(colIdx).type() : ColumnSpec.Type.TEXT;
+
+        // ── Validate filter value against column type before applying ──
+        if (colType == ColumnSpec.Type.INTEGER || colType == ColumnSpec.Type.DECIMAL) {
+            try { Double.parseDouble(val); }
+            catch (NumberFormatException e) {
+                statusLabel.setText("Invalid filter: \"" + val + "\" is not a number.");
+                return;
+            }
+        }
+        if (colType == ColumnSpec.Type.DATE) {
+            if (!val.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                statusLabel.setText("Invalid filter: date must be YYYY-MM-DD (e.g. 2003-05-15).");
+                return;
+            }
+        }
+
         sorter.setRowFilter(new RowFilter<ReadOnlyTableModel, Integer>() {
             @Override
             public boolean include(Entry<? extends ReadOnlyTableModel, ? extends Integer> entry) {
@@ -227,34 +269,47 @@ final class CrudPanel extends JPanel {
                 if (cell == null) return false;
                 String cellStr = cell.toString();
 
-                // Try numeric comparison first
-                try {
-                    double cellNum = Double.parseDouble(cellStr);
-                    double filterNum = Double.parseDouble(val);
+                // ── Date column: strip time component and compare lexicographically ──
+                if (colType == ColumnSpec.Type.DATE) {
+                    // Oracle may return "yyyy-MM-dd HH:mm:ss.S"; keep only date part
+                    String cellDate = cellStr.length() > 10 && cellStr.charAt(10) == ' '
+                            ? cellStr.substring(0, 10) : cellStr;
+                    int cmp = cellDate.compareTo(val);
                     return switch (op) {
-                        case ">"        -> cellNum >  filterNum;
-                        case "<"        -> cellNum <  filterNum;
-                        case ">="       -> cellNum >= filterNum;
-                        case "<="       -> cellNum <= filterNum;
-                        case "="        -> cellNum == filterNum;
-                        case "≠"        -> cellNum != filterNum;
-                        default         -> cellStr.toLowerCase().contains(val.toLowerCase());
+                        case ">"  -> cmp >  0;
+                        case "<"  -> cmp <  0;
+                        case ">=" -> cmp >= 0;
+                        case "<=" -> cmp <= 0;
+                        case "="  -> cmp == 0;
+                        case "≠"  -> cmp != 0;
+                        default   -> cellDate.contains(val);
                     };
-                } catch (NumberFormatException ignored) {
-                    // Fall through to text comparison
                 }
 
-                // Text comparison
+                // ── Numeric column: parse and compare as double ──
+                if (colType == ColumnSpec.Type.INTEGER || colType == ColumnSpec.Type.DECIMAL) {
+                    try {
+                        double cellNum = Double.parseDouble(cellStr);
+                        double filterNum = Double.parseDouble(val);
+                        return switch (op) {
+                            case ">"  -> cellNum >  filterNum;
+                            case "<"  -> cellNum <  filterNum;
+                            case ">=" -> cellNum >= filterNum;
+                            case "<=" -> cellNum <= filterNum;
+                            case "="  -> cellNum == filterNum;
+                            case "≠"  -> cellNum != filterNum;
+                            default   -> cellStr.toLowerCase().contains(val.toLowerCase());
+                        };
+                    } catch (NumberFormatException ignored) {
+                        // fall through to text
+                    }
+                }
+
+                // ── Text column: contains / = / ≠ ──
                 return switch (op) {
                     case "="        -> cellStr.equalsIgnoreCase(val);
                     case "≠"        -> !cellStr.equalsIgnoreCase(val);
-                    case "contains" -> cellStr.toLowerCase().contains(val.toLowerCase());
-                    // Lexicographic for >, <, >=, <=
-                    case ">"        -> cellStr.compareToIgnoreCase(val) >  0;
-                    case "<"        -> cellStr.compareToIgnoreCase(val) <  0;
-                    case ">="       -> cellStr.compareToIgnoreCase(val) >= 0;
-                    case "<="       -> cellStr.compareToIgnoreCase(val) <= 0;
-                    default         -> true;
+                    default         -> cellStr.toLowerCase().contains(val.toLowerCase());
                 };
             }
         });

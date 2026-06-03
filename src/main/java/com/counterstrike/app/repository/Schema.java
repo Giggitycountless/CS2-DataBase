@@ -21,7 +21,7 @@ public final class Schema {
             required("Nickname", "Nickname", Type.TEXT),
             required("FullName", "Full Name", Type.TEXT),
             col("Birthday", "Birthday", Type.DATE),
-            col("Nationality", "Nationality", Type.TEXT)
+            ref("Nationality", "Nationality", Type.TEXT, "People", "Nationality", false)
     ), "PersonID");
 
     public static final TableSpec PLAYER = new TableSpec("Player", "Player", List.of(

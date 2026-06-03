@@ -1,5 +1,6 @@
 package com.counterstrike.app.ui;
 
+import com.counterstrike.app.CounterStrikeApp;
 import com.counterstrike.app.repository.AppRepository;
 import com.counterstrike.app.repository.HomeSummary;
 import com.counterstrike.app.repository.TableData;
@@ -120,19 +121,27 @@ public final class MainFrame extends JFrame {
         dbLabel.setForeground(TEXT_MUTED);
         dbLabel.setFont(dbLabel.getFont().deriveFont(11f));
 
-        // Search bar
+        // Search bar — Switch DB lives here so the nav row has full width
+        JButton switchBtn = new JButton("Switch DB");
+        styleActionButton(switchBtn);
+        switchBtn.addActionListener(e -> CounterStrikeApp.connect(MainFrame.this));
+
         JPanel search = new JPanel(new BorderLayout(8, 0));
         search.setBorder(new EmptyBorder(14, 0, 0, 0));
         search.setOpaque(false);
         JLabel searchLabel = new JLabel("Search");
         searchLabel.setForeground(TEXT_MUTED);
         JButton refresh = new JButton("Refresh");
-        refresh.setBackground(ACCENT_DIM);
-        refresh.setForeground(TEXT_PRIMARY);
-        refresh.setFocusPainted(false);
+        styleActionButton(refresh);
+
+        JPanel searchRight = new JPanel(new FlowLayout(FlowLayout.RIGHT, 6, 0));
+        searchRight.setOpaque(false);
+        searchRight.add(switchBtn);
+        searchRight.add(refresh);
+
         search.add(searchLabel, BorderLayout.WEST);
         search.add(searchField, BorderLayout.CENTER);
-        search.add(refresh, BorderLayout.EAST);
+        search.add(searchRight, BorderLayout.EAST);
 
         searchField.addActionListener(event -> reloadCurrentPage());
         refresh.addActionListener(event -> reloadCurrentPage());

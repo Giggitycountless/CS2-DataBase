@@ -232,16 +232,26 @@ public final class MongoCounterStrikeRepository implements AppRepository {
 
     @Override
     public List<String> distinctValues(String table, String column) {
-        // Map Oracle table/column references to MongoDB equivalents
         String mongoCol = mongoCollectionFor(table);
         String mongoField = mongoFieldFor(table, column);
 
-        List<String> result = new ArrayList<>();
-        for (Object val : col(mongoCol).distinct(mongoField, Object.class)) {
-            if (val != null) result.add(fmtKey(val));
+        // distinct(field, Object.class) throws a codec error in the MongoDB Java driver;
+        // iterate and extract manually to support both primitive and nested paths.
+        Set<String> seen = new java.util.LinkedHashSet<>();
+        for (Document doc : col(mongoCol).find()) {
+            Object val = extractNestedValue(doc, mongoField);
+            if (val != null) seen.add(fmtKey(val));
         }
+        List<String> result = new ArrayList<>(seen);
         Collections.sort(result);
         return result;
+    }
+
+    private static Object extractNestedValue(Document doc, String fieldPath) {
+        String[] parts = fieldPath.split("\\.", 2);
+        Object val = doc.get(parts[0]);
+        if (parts.length == 1 || !(val instanceof Document nested)) return val;
+        return extractNestedValue(nested, parts[1]);
     }
 
     @Override
@@ -634,7 +644,8 @@ public final class MongoCounterStrikeRepository implements AppRepository {
     /** Maps Oracle column name to MongoDB field for distinctValues(). */
     private static String mongoFieldFor(String table, String column) {
         return switch (table + "." + column) {
-            case "People.PersonID"  -> "_id";
+            case "People.PersonID"    -> "_id";
+            case "People.Nationality" -> "nationality";
             case "Player.PersonID"  -> "_id";
             case "Coach.PersonID"   -> "_id";
             case "Team.TeamName"    -> "_id";

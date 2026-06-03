@@ -24,13 +24,18 @@ public final class CounterStrikeApp {
         UIManager.put("Component.arc", 6);
         UIManager.put("ScrollBar.thumbArc", 999);
         UIManager.put("ScrollBar.thumbInsets", new java.awt.Insets(2, 2, 2, 2));
-        SwingUtilities.invokeLater(CounterStrikeApp::start);
+        UIManager.put("OptionPane.okButtonText",     "OK");
+        UIManager.put("OptionPane.cancelButtonText", "Cancel");
+        UIManager.put("OptionPane.yesButtonText",    "Yes");
+        UIManager.put("OptionPane.noButtonText",     "No");
+        SwingUtilities.invokeLater(() -> connect(null));
     }
 
-    private static void start() {
+    /** Opens the connection dialog. If successful, shows a new MainFrame and disposes {@code oldFrame}. */
+    public static void connect(javax.swing.JFrame oldFrame) {
         String[] options = {"Oracle (Relational)", "MongoDB (NoSQL)"};
         int choice = JOptionPane.showOptionDialog(
-                null,
+                oldFrame,
                 "Select the database backend to connect to:",
                 "CS2 Database Browser — Connect",
                 JOptionPane.DEFAULT_OPTION,
@@ -50,7 +55,7 @@ public final class CounterStrikeApp {
                 dbInfo = config.url();
             } else {
                 String uri = (String) JOptionPane.showInputDialog(
-                        null,
+                        oldFrame,
                         "MongoDB connection URI:",
                         "MongoDB Connection",
                         JOptionPane.PLAIN_MESSAGE,
@@ -64,9 +69,10 @@ public final class CounterStrikeApp {
             }
             MainFrame frame = new MainFrame(repository, dbInfo);
             frame.setVisible(true);
+            if (oldFrame != null) oldFrame.dispose();
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(
-                    null,
+                    oldFrame,
                     exception.getMessage(),
                     "Counter-Strike Browser — Connection Error",
                     JOptionPane.ERROR_MESSAGE);
